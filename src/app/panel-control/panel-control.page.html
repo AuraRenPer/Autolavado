@@ -18,16 +18,29 @@
 
   <!-- Contenedor para los botones de navegación -->
   <ion-row class="ion-margin-top" justify-content-center>
+    <!-- Primer botón (Calendario) -->
     <ion-col size="auto">
       <ion-button class="square-button" [routerLink]="['/calendario-citas']">
         <ion-icon slot="start" name="calendar" class="large-icon"></ion-icon>
         <ion-label>Ir al Calendario</ion-label>
       </ion-button>
     </ion-col>
+
+    <!-- Segundo botón (Perfil) -->
     <ion-col size="auto">
       <ion-button class="square-button" [routerLink]="['/perfil-paciente']">
         <ion-icon slot="start" name="person" class="large-icon"></ion-icon>
         <ion-label>Ir al Perfil</ion-label>
+      </ion-button>
+    </ion-col>
+  </ion-row>
+
+  <!-- Tercer botón (Consultas Pasadas) debajo de los primeros dos -->
+  <ion-row class="ion-margin-top" justify-content-center>
+    <ion-col size="auto">
+      <ion-button class="square-button" [routerLink]="['/consultas-pasadas']">
+        <ion-icon slot="start" name="time" class="large-icon"></ion-icon>
+        <ion-label>Consultas Pasadas</ion-label>
       </ion-button>
     </ion-col>
   </ion-row>
