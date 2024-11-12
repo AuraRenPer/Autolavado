@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Panel de Control</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true" scroll-y="true">
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Tus próximas citas</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let cita of citasProximas">
+      <ion-label>
+        <h2>{{ cita.fechaHora | date:'dd MMM yyyy, h:mm a' }}</h2>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!-- Contenedor para los botones de navegación -->
+  <ion-row class="ion-margin-top" justify-content-center>
+    <ion-col size="auto">
+      <ion-button class="square-button" [routerLink]="['/calendario-citas']">
+        <ion-icon slot="start" name="calendar" class="large-icon"></ion-icon>
+        <ion-label>Ir al Calendario</ion-label>
+      </ion-button>
+    </ion-col>
+    <ion-col size="auto">
+      <ion-button class="square-button" [routerLink]="['/perfil-paciente']">
+        <ion-icon slot="start" name="person" class="large-icon"></ion-icon>
+        <ion-label>Ir al Perfil</ion-label>
+      </ion-button>
+    </ion-col>
+  </ion-row>
+
+</ion-content>

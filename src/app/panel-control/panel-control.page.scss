@@ -1,0 +1,20 @@
+.square-button {
+    width: 150px;          /* Hacer los botones cuadrados */
+    height: 150px;         /* Altura igual a la anchura para hacerlo cuadrado */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0;            /* Quitar el padding extra */
+  }
+  
+  .large-icon {
+    font-size: 48px;       /* Hacer el icono más grande */
+    margin-bottom: 8px;    /* Espacio entre el icono y el texto */
+  }
+  
+  ion-label {
+    font-size: 14px;       /* Tamaño del texto */
+    text-align: center;    /* Alinear el texto en el centro */
+  }
+  
