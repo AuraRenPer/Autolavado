@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class CitasService {
   // Creamos un BehaviorSubject con un array vacío inicialmente.
-  private citasSubject = new BehaviorSubject<Array<{ fechaHora: Date }>>([]);
+  private citasSubject = new BehaviorSubject<Array<{ fechaHora: Date, imagenUrl?: string }>>([]);
   citas$ = this.citasSubject.asObservable();  // Exponemos el observable de citas.
 
   constructor() {
@@ -19,16 +19,21 @@ export class CitasService {
     this.citasSubject.next(citasIniciales);  // Emitimos las citas iniciales.
   }
 
-  // Método para obtener las citas próximas (puedes agregar lógica adicional aquí).
-  obtenerCitasProximas(): Array<{ fechaHora: Date }> {
+  // Método para obtener las citas próximas.
+  obtenerCitasProximas(): Array<{ fechaHora: Date, imagenUrl?: string }> {
     return this.citasSubject.value;  // Retorna las citas actuales desde el BehaviorSubject.
   }
 
-  // Método para agregar una nueva cita.
-  agregarCita(cita: { fechaHora: Date }) {
+  // Método para agregar una nueva cita (imagenUrl es opcional).
+  agregarCita(cita: { fechaHora: Date, imagenUrl?: string }) {
     const citasActuales = this.citasSubject.value;  // Obtenemos las citas actuales.
     citasActuales.push(cita);  // Agregamos la nueva cita.
     this.citasSubject.next(citasActuales);  // Emitimos la lista actualizada de citas.
     console.log('Cita agregada:', cita);
+  }
+
+  // Método para actualizar las citas (después de agregar una imagen).
+  actualizarCitas(citas: Array<{ fechaHora: Date, imagenUrl?: string }>) {
+    this.citasSubject.next(citas);  // Emitimos la lista actualizada de citas
   }
 }
