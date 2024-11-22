@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CitasService } from '../services/citas.service';  // Importamos el servicio de citas
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';  // Importamos la cámara
+import { CitasService } from '../services/citas.service';
+import { ModalController } from '@ionic/angular';
+import { ModalCamaraComponent } from '../components/modal-camara/modal-camara.component';
 
 @Component({
   selector: 'app-consultas-pasadas',
@@ -8,33 +9,44 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';  // 
   styleUrls: ['./consultas-pasadas.page.scss'],
 })
 export class ConsultasPasadasPage implements OnInit {
+  citasPasadas: Array<{ fechaHora: Date; imagenUrl?: string }> = [];
 
-  // Lista de citas que se obtienen desde el servicio
-  citasPasadas: Array<{ fechaHora: Date, imagenUrl?: string }> = [];
+  constructor(private citasService: CitasService, private modalController: ModalController) {}
 
-  constructor(private citasService: CitasService) {}
+  async ngOnInit() {
+    await this.citasService.esperarCitasCargadas();
 
-  ngOnInit() {
-    // Obtenemos las citas cuando la página se inicializa
-    this.citasService.citas$.subscribe(citas => {
-      this.citasPasadas = citas;  // Asignamos las citas al arreglo de citasPasadas
+    this.citasService.citas$.subscribe((citas) => {
+      this.citasPasadas = citas.map((cita) => ({
+        ...cita,
+        fechaHora: new Date(cita.fechaHora),
+      }));
+      console.log('Citas pasadas actualizadas:', this.citasPasadas);
     });
   }
 
-  // Función para abrir la cámara o galería y asociar la imagen con la cita
+  // Abre el modal para tomar o seleccionar una foto
   async agregarImagen(citaIndex: number) {
-    const image = await Camera.getPhoto({
-      quality: 90,
-      source: CameraSource.Prompt,  // Permite al usuario elegir entre cámara o galería
-      resultType: CameraResultType.Uri,  // Solo obtenemos la URI de la imagen
+    const modal = await this.modalController.create({
+      component: ModalCamaraComponent,
     });
 
-    // Aquí obtenemos la URL de la imagen seleccionada
-    const imageUrl = image.webPath;
+    await modal.present();
 
-    // Actualizamos la cita en el servicio con la imagen seleccionada
-    const citas = this.citasService.obtenerCitasProximas();  // Obtenemos todas las citas
-    citas[citaIndex].imagenUrl = imageUrl;  // Asignamos la nueva imagen a la cita correspondiente
-    this.citasService.actualizarCitas(citas);  // Emitimos la nueva lista de citas
+    // Esperar a que el modal se cierre y obtenga la imagen
+    const { data } = await modal.onWillDismiss();
+    if (data && data.imageUrl) {
+      try {
+        // Obtener la cita actual y actualizar solo la imagenUrl
+        const citaActual = this.citasPasadas[citaIndex];
+        const nuevaCita = { ...citaActual, imagenUrl: data.imageUrl };
+
+        // Actualizar la cita específica en el servicio
+        await this.citasService.actualizarCita(citaIndex, nuevaCita);
+        console.log('Imagen agregada a la cita:', nuevaCita);
+      } catch (error) {
+        console.error('Error al actualizar la cita:', error);
+      }
+    }
   }
 }

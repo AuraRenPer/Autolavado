@@ -1,5 +1,12 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <!-- Botón para regresar al Panel de Control -->
+      <ion-button [routerLink]="['/panel-control']">
+        <ion-icon slot="start" name="arrow-back"></ion-icon>
+        Regresar
+      </ion-button>
+    </ion-buttons>
     <ion-title>Consultas Pasadas</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,7 +16,7 @@
     <ion-list-header>
       <ion-label>Consultas anteriores</ion-label>
     </ion-list-header>
-    
+
     <ion-item *ngFor="let cita of citasPasadas; let i = index">
       <ion-avatar slot="start" *ngIf="cita.imagenUrl">
         <img [src]="cita.imagenUrl" alt="Imagen de la cita" />

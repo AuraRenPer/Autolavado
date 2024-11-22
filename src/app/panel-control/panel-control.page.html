@@ -9,11 +9,26 @@
     <ion-list-header>
       <ion-label>Tus próximas citas</ion-label>
     </ion-list-header>
-    <ion-item *ngFor="let cita of citasProximas">
-      <ion-label>
-        <h2>{{ cita.fechaHora | date:'dd MMM yyyy, h:mm a' }}</h2>
-      </ion-label>
-    </ion-item>
+
+    <!-- Verificar si hay citas disponibles -->
+    <ng-container *ngIf="citasProximas.length > 0; else noCitas">
+      <!-- Iterar sobre las citas disponibles -->
+      <ion-item *ngFor="let cita of citasProximas">
+        <ion-thumbnail slot="start" *ngIf="cita.imagenUrl">
+          <img [src]="cita.imagenUrl" alt="Imagen de la cita" />
+        </ion-thumbnail>
+        <ion-label>
+          <h2>{{ cita.fechaHora | date:'dd MMM yyyy, h:mm a' }}</h2>
+        </ion-label>
+      </ion-item>
+    </ng-container>
+
+    <!-- Plantilla alternativa cuando no hay citas -->
+    <ng-template #noCitas>
+      <ion-item>
+        <ion-label>No hay citas próximas</ion-label>
+      </ion-item>
+    </ng-template>
   </ion-list>
 
   <!-- Contenedor para los botones de navegación -->
@@ -44,5 +59,4 @@
       </ion-button>
     </ion-col>
   </ion-row>
-
 </ion-content>

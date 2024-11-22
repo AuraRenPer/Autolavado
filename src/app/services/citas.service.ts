@@ -1,39 +1,72 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Storage } from '@capacitor/storage';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CitasService {
-  // Creamos un BehaviorSubject con un array vacío inicialmente.
-  private citasSubject = new BehaviorSubject<Array<{ fechaHora: Date, imagenUrl?: string }>>([]);
-  citas$ = this.citasSubject.asObservable();  // Exponemos el observable de citas.
+  private citasSubject = new BehaviorSubject<Array<{ fechaHora: Date; imagenUrl?: string }>>([]);
+  citas$ = this.citasSubject.asObservable();
+
+  private readonly STORAGE_KEY = 'citas';
+  private storageLoaded = false;
 
   constructor() {
-    // Inicializa con datos simulados (puedes obtenerlos de una API o base de datos).
-    const citasIniciales = [
-      { fechaHora: new Date('2024-11-13T21:32:00.000Z') },
-      { fechaHora: new Date('2024-11-12T21:38:00.000Z') },
-      { fechaHora: new Date('2024-11-13T21:44:00.000Z') }
-    ];
-    this.citasSubject.next(citasIniciales);  // Emitimos las citas iniciales.
+    this.cargarCitasDesdeStorage();
   }
 
-  // Método para obtener las citas próximas.
-  obtenerCitasProximas(): Array<{ fechaHora: Date, imagenUrl?: string }> {
-    return this.citasSubject.value;  // Retorna las citas actuales desde el BehaviorSubject.
+  private async cargarCitasDesdeStorage() {
+    const citas = await Storage.get({ key: this.STORAGE_KEY });
+    const citasArray = citas.value ? JSON.parse(citas.value) : [];
+    this.citasSubject.next(citasArray);
+    this.storageLoaded = true;
+    console.log('Citas cargadas desde el almacenamiento:', citasArray);
   }
 
-  // Método para agregar una nueva cita (imagenUrl es opcional).
-  agregarCita(cita: { fechaHora: Date, imagenUrl?: string }) {
-    const citasActuales = this.citasSubject.value;  // Obtenemos las citas actuales.
-    citasActuales.push(cita);  // Agregamos la nueva cita.
-    this.citasSubject.next(citasActuales);  // Emitimos la lista actualizada de citas.
+  async esperarCitasCargadas() {
+    if (this.storageLoaded) return;
+    while (!this.storageLoaded) {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+  }
+
+  obtenerCitasProximas(): Array<{ fechaHora: Date; imagenUrl?: string }> {
+    return this.citasSubject.value.map((cita) => ({
+      ...cita,
+      fechaHora: new Date(cita.fechaHora),
+    }));
+  }
+
+  async agregarCita(cita: { fechaHora: Date; imagenUrl?: string }) {
+    const citasActuales = this.citasSubject.value;
+    citasActuales.push(cita);
+    this.citasSubject.next([...citasActuales]);
+    await this.guardarCitasEnStorage(citasActuales);
     console.log('Cita agregada:', cita);
   }
 
-  // Método para actualizar las citas (después de agregar una imagen).
-  actualizarCitas(citas: Array<{ fechaHora: Date, imagenUrl?: string }>) {
-    this.citasSubject.next(citas);  // Emitimos la lista actualizada de citas
+  async actualizarCita(index: number, nuevaCita: { fechaHora: Date; imagenUrl?: string }) {
+    const citasActuales = this.citasSubject.value;
+
+    // Validar que el índice sea válido
+    if (index < 0 || index >= citasActuales.length) {
+      throw new Error('Índice inválido para la actualización de la cita.');
+    }
+
+    // Actualizar la cita en la posición indicada
+    citasActuales[index] = { ...citasActuales[index], ...nuevaCita };
+    this.citasSubject.next([...citasActuales]); // Emitimos el nuevo estado
+    await this.guardarCitasEnStorage(citasActuales); // Guardamos en almacenamiento persistente
+
+    console.log('Cita actualizada:', citasActuales[index]);
+  }
+
+  private async guardarCitasEnStorage(citas: Array<{ fechaHora: Date; imagenUrl?: string }>) {
+    await Storage.set({
+      key: this.STORAGE_KEY,
+      value: JSON.stringify(citas),
+    });
+    console.log('Citas guardadas en el almacenamiento:', citas);
   }
 }

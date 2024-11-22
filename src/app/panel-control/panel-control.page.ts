@@ -7,18 +7,28 @@ import { CitasService } from '../services/citas.service';
   styleUrls: ['./panel-control.page.scss'],
 })
 export class PanelControlPage implements OnInit {
-  citasProximas: Array<{ fechaHora: Date }> = [];  // Variable para almacenar las citas próximas
+  citasProximas: Array<{ fechaHora: Date; imagenUrl?: string }> = [];
 
   constructor(private citasService: CitasService) {}
 
-  ngOnInit() {
-    // Inicializa las citas al cargar la página
+  async ngOnInit() {
+    await this.citasService.esperarCitasCargadas(); // Esperar a que se carguen las citas
     this.cargarCitas();
   }
 
   cargarCitas() {
-    // Carga las citas próximas desde el servicio
-    this.citasProximas = this.citasService.obtenerCitasProximas();
-    console.log('Citas próximas al cargar:', this.citasProximas);
+    const ahora = new Date();
+    const todasLasCitas = this.citasService.obtenerCitasProximas();
+
+    console.log('Citas obtenidas antes de filtrar:', todasLasCitas);
+
+    this.citasProximas = todasLasCitas
+      .map((cita) => ({
+        ...cita,
+        fechaHora: new Date(cita.fechaHora),
+      }))
+      .filter((cita) => cita.fechaHora > ahora);
+
+    console.log('Citas próximas después de la fecha actual:', this.citasProximas);
   }
 }

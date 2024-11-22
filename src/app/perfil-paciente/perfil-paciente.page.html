@@ -1,6 +1,12 @@
-<!-- Perfil del Paciente Page HTML -->
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <!-- Botón para regresar al Panel de Control -->
+      <ion-button [routerLink]="['/panel-control']">
+        <ion-icon slot="start" name="arrow-back"></ion-icon>
+        Regresar
+      </ion-button>
+    </ion-buttons>
     <ion-title>Perfil del Paciente</ion-title>
   </ion-toolbar>
 </ion-header>

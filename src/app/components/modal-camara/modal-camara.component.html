@@ -1,0 +1,21 @@
+<!-- camera-modal.component.html -->
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Cámara</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-button expand="full" (click)="takePhoto()">Tomar Foto</ion-button>
+  <div *ngIf="isDesktop && videoStreamActive">
+    <video #video autoplay></video>
+  </div>
+  <div *ngIf="imageUrl" class="image-preview">
+    <img [src]="imageUrl" alt="Foto tomada" />
+    <ion-button (click)="saveToGallery()">Save to Gallery</ion-button>
+    <ion-button (click)="shareImage()">Share Image</ion-button>
+  </div>
+</ion-content>
