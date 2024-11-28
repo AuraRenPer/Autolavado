@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Storage } from '@capacitor/storage';
 
 @Injectable({
   providedIn: 'root',
@@ -17,11 +16,11 @@ export class CitasService {
   }
 
   private async cargarCitasDesdeStorage() {
-    const citas = await Storage.get({ key: this.STORAGE_KEY });
-    const citasArray = citas.value ? JSON.parse(citas.value) : [];
+    // Acción vacía, pero simulamos una carga inicial.
+    const citasArray: Array<{ fechaHora: Date; imagenUrl?: string }> = [];
     this.citasSubject.next(citasArray);
     this.storageLoaded = true;
-    console.log('Citas cargadas desde el almacenamiento:', citasArray);
+    console.log('Citas cargadas desde el almacenamiento (acción vacía):', citasArray);
   }
 
   async esperarCitasCargadas() {
@@ -43,7 +42,7 @@ export class CitasService {
     citasActuales.push(cita);
     this.citasSubject.next([...citasActuales]);
     await this.guardarCitasEnStorage(citasActuales);
-    console.log('Cita agregada:', cita);
+    console.log('Cita agregada (acción vacía):', cita);
   }
 
   async actualizarCita(index: number, nuevaCita: { fechaHora: Date; imagenUrl?: string }) {
@@ -57,16 +56,12 @@ export class CitasService {
     // Actualizar la cita en la posición indicada
     citasActuales[index] = { ...citasActuales[index], ...nuevaCita };
     this.citasSubject.next([...citasActuales]); // Emitimos el nuevo estado
-    await this.guardarCitasEnStorage(citasActuales); // Guardamos en almacenamiento persistente
-
-    console.log('Cita actualizada:', citasActuales[index]);
+    await this.guardarCitasEnStorage(citasActuales); // Acción vacía
+    console.log('Cita actualizada (acción vacía):', citasActuales[index]);
   }
 
   private async guardarCitasEnStorage(citas: Array<{ fechaHora: Date; imagenUrl?: string }>) {
-    await Storage.set({
-      key: this.STORAGE_KEY,
-      value: JSON.stringify(citas),
-    });
-    console.log('Citas guardadas en el almacenamiento:', citas);
+    // Acción vacía, simulando la escritura en almacenamiento
+    console.log('Citas guardadas en el almacenamiento (acción vacía):', citas);
   }
 }
