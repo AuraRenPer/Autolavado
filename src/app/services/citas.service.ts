@@ -1,36 +1,52 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { getDatabase, ref, set, onValue, push, update, remove } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CitasService {
-  private citasSubject = new BehaviorSubject<Array<{ fechaHora: Date; imagenUrl?: string }>>([]);
+  private citasSubject = new BehaviorSubject<Array<{ id: string; fechaHora: Date; imagenUrl?: string }>>([]);
   citas$ = this.citasSubject.asObservable();
 
-  private readonly STORAGE_KEY = 'citas';
-  private storageLoaded = false;
+  private database = getDatabase();
+  private auth = getAuth();
+  private userId: string | null = null;
 
   constructor() {
-    this.cargarCitasDesdeStorage();
+    this.init();
   }
 
-  private async cargarCitasDesdeStorage() {
-    // Acción vacía, pero simulamos una carga inicial.
-    const citasArray: Array<{ fechaHora: Date; imagenUrl?: string }> = [];
-    this.citasSubject.next(citasArray);
-    this.storageLoaded = true;
-    console.log('Citas cargadas desde el almacenamiento (acción vacía):', citasArray);
-  }
-
-  async esperarCitasCargadas() {
-    if (this.storageLoaded) return;
-    while (!this.storageLoaded) {
-      await new Promise((resolve) => setTimeout(resolve, 50));
+  private async init() {
+    const currentUser = this.auth.currentUser;
+    if (currentUser) {
+      this.userId = currentUser.uid;
+      this.cargarCitasDesdeDatabase();
+    } else {
+      console.error('Usuario no autenticado. No se puede cargar citas.');
     }
   }
 
-  obtenerCitasProximas(): Array<{ fechaHora: Date; imagenUrl?: string }> {
+  private cargarCitasDesdeDatabase() {
+    if (!this.userId) return;
+
+    const citasRef = ref(this.database, `users/${this.userId}/citas`);
+    onValue(citasRef, (snapshot) => {
+      const data = snapshot.val();
+      const citasArray = data
+        ? Object.entries(data).map(([key, value]: [string, any]) => ({
+            id: key,
+            fechaHora: new Date(value.fechaHora), // Reconstruir la fecha como objeto Date
+            imagenUrl: value.imagenUrl,
+          }))
+        : [];
+      this.citasSubject.next(citasArray);
+      console.log('Citas cargadas desde la base de datos:', citasArray);
+    });
+  }
+
+  obtenerCitasProximas(): Array<{ id: string; fechaHora: Date; imagenUrl?: string }> {
     return this.citasSubject.value.map((cita) => ({
       ...cita,
       fechaHora: new Date(cita.fechaHora),
@@ -38,30 +54,39 @@ export class CitasService {
   }
 
   async agregarCita(cita: { fechaHora: Date; imagenUrl?: string }) {
-    const citasActuales = this.citasSubject.value;
-    citasActuales.push(cita);
-    this.citasSubject.next([...citasActuales]);
-    await this.guardarCitasEnStorage(citasActuales);
-    console.log('Cita agregada (acción vacía):', cita);
+    if (!this.userId) throw new Error('Usuario no autenticado.');
+
+    const citasRef = ref(this.database, `users/${this.userId}/citas`);
+    const newCitaRef = push(citasRef);
+
+    // Convertir la fecha a formato ISO antes de guardarla
+    const citaConFechaISO = {
+      ...cita,
+      fechaHora: cita.fechaHora.toISOString(),
+    };
+
+    await set(newCitaRef, citaConFechaISO);
+    console.log('Cita agregada:', citaConFechaISO);
   }
 
-  async actualizarCita(index: number, nuevaCita: { fechaHora: Date; imagenUrl?: string }) {
-    const citasActuales = this.citasSubject.value;
+  async actualizarCita(id: string, nuevaCita: { fechaHora: Date; imagenUrl?: string }) {
+    if (!this.userId) throw new Error('Usuario no autenticado.');
 
-    // Validar que el índice sea válido
-    if (index < 0 || index >= citasActuales.length) {
-      throw new Error('Índice inválido para la actualización de la cita.');
-    }
+    const citaRef = ref(this.database, `users/${this.userId}/citas/${id}`);
+    const citaActualizada = {
+      ...nuevaCita,
+      fechaHora: nuevaCita.fechaHora.toISOString(), // Convertir a ISO
+    };
 
-    // Actualizar la cita en la posición indicada
-    citasActuales[index] = { ...citasActuales[index], ...nuevaCita };
-    this.citasSubject.next([...citasActuales]); // Emitimos el nuevo estado
-    await this.guardarCitasEnStorage(citasActuales); // Acción vacía
-    console.log('Cita actualizada (acción vacía):', citasActuales[index]);
+    await update(citaRef, citaActualizada);
+    console.log('Cita actualizada:', citaActualizada);
   }
 
-  private async guardarCitasEnStorage(citas: Array<{ fechaHora: Date; imagenUrl?: string }>) {
-    // Acción vacía, simulando la escritura en almacenamiento
-    console.log('Citas guardadas en el almacenamiento (acción vacía):', citas);
+  async eliminarCita(id: string) {
+    if (!this.userId) throw new Error('Usuario no autenticado.');
+
+    const citaRef = ref(this.database, `users/${this.userId}/citas/${id}`);
+    await remove(citaRef);
+    console.log('Cita eliminada:', id);
   }
 }

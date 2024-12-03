@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Iniciar Sesión</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-label position="stacked">Correo Electrónico</ion-label>
+    <ion-input [(ngModel)]="email" type="email" placeholder="Ingresa tu correo"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="stacked">Contraseña</ion-label>
+    <ion-input [(ngModel)]="password" type="password" placeholder="Ingresa tu contraseña"></ion-input>
+  </ion-item>
+  <ion-button expand="block" (click)="iniciarSesion()">Iniciar Sesión</ion-button>
+
+  <!-- Botón para redirigir al Registro -->
+  <ion-button expand="block" fill="outline" [routerLink]="['/registro']">
+    ¿No tienes cuenta? Regístrate
+  </ion-button>
+</ion-content>

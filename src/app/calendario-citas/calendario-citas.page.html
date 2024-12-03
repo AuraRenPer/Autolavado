@@ -1,7 +1,6 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <!-- Botón para regresar al Panel de Control -->
       <ion-button [routerLink]="['/panel-control']">
         <ion-icon slot="start" name="arrow-back"></ion-icon>
         Regresar
@@ -12,7 +11,6 @@
 </ion-header>
 
 <ion-content scroll-y="true" [scrollEvents]="true">
-  <!-- Card para programar una nueva cita -->
   <ion-card>
     <ion-card-header>
       <ion-card-title>Programar Cita</ion-card-title>
@@ -31,15 +29,17 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Lista de citas programadas -->
   <ion-list>
     <ion-list-header>
       <ion-label>Todas las Citas</ion-label>
     </ion-list-header>
     <ion-item *ngFor="let cita of citasProximas">
       <ion-label>
-        <h2>{{ cita.fechaHora | date:'dd MMM yyyy, h:mm a' }}</h2>
+        <h2>{{ cita.fechaHora | date: 'dd MMM yyyy, h:mm a' }}</h2>
       </ion-label>
+      <ion-button slot="end" color="danger" (click)="eliminarCita(cita.id)">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
     </ion-item>
   </ion-list>
 </ion-content>

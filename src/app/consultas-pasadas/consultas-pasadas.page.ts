@@ -9,24 +9,26 @@ import { ModalCamaraComponent } from '../components/modal-camara/modal-camara.co
   styleUrls: ['./consultas-pasadas.page.scss'],
 })
 export class ConsultasPasadasPage implements OnInit {
-  citasPasadas: Array<{ fechaHora: Date; imagenUrl?: string }> = [];
+  citasPasadas: Array<{ id: string; fechaHora: Date; imagenUrl?: string }> = [];
 
   constructor(private citasService: CitasService, private modalController: ModalController) {}
 
   async ngOnInit() {
-    await this.citasService.esperarCitasCargadas();
-
+    // Suscribirse al observable para recibir actualizaciones en tiempo real
     this.citasService.citas$.subscribe((citas) => {
-      this.citasPasadas = citas.map((cita) => ({
-        ...cita,
-        fechaHora: new Date(cita.fechaHora),
-      }));
+      // Filtrar citas pasadas
+      this.citasPasadas = citas
+        .filter((cita) => new Date(cita.fechaHora) < new Date())
+        .map((cita) => ({
+          ...cita,
+          fechaHora: new Date(cita.fechaHora),
+        }));
       console.log('Citas pasadas actualizadas:', this.citasPasadas);
     });
   }
 
   // Abre el modal para tomar o seleccionar una foto
-  async agregarImagen(citaIndex: number) {
+  async agregarImagen(citaId: string) {
     const modal = await this.modalController.create({
       component: ModalCamaraComponent,
     });
@@ -37,13 +39,15 @@ export class ConsultasPasadasPage implements OnInit {
     const { data } = await modal.onWillDismiss();
     if (data && data.imageUrl) {
       try {
-        // Obtener la cita actual y actualizar solo la imagenUrl
-        const citaActual = this.citasPasadas[citaIndex];
-        const nuevaCita = { ...citaActual, imagenUrl: data.imageUrl };
+        // Obtener la cita actual
+        const citaActual = this.citasPasadas.find((cita) => cita.id === citaId);
+        if (citaActual) {
+          const nuevaCita = { ...citaActual, imagenUrl: data.imageUrl };
 
-        // Actualizar la cita específica en el servicio
-        await this.citasService.actualizarCita(citaIndex, nuevaCita);
-        console.log('Imagen agregada a la cita:', nuevaCita);
+          // Actualizar la cita específica en Firebase
+          await this.citasService.actualizarCita(citaId, nuevaCita);
+          console.log('Imagen agregada a la cita:', nuevaCita);
+        }
       } catch (error) {
         console.error('Error al actualizar la cita:', error);
       }
