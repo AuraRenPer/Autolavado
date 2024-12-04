@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CitasService } from '../services/citas.service';
+import { CitasService } from '../../services/citas.service';
 import { ChangeDetectionStrategy } from '@angular/core';
 
 @Component({

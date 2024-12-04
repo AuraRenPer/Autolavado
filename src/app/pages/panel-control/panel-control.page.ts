@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CitasService } from '../services/citas.service';
-import { AuthService } from '../services/auth.service'; // Importar el servicio de autenticación
+import { CitasService } from '../../services/citas.service';
+import { AuthService } from '../../services/auth.service'; // Importar el servicio de autenticación
 import { Router } from '@angular/router';
 
 @Component({

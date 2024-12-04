@@ -7,7 +7,7 @@
         Cerrar Sesión
       </ion-button>
     </ion-buttons>
-    <ion-title>Panel de Control</ion-title>
+    <ion-title>Consultas medicas</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -25,7 +25,7 @@
           <img [src]="cita.imagenUrl" alt="Imagen de la cita" />
         </ion-thumbnail>
         <ion-label>
-          <h2>{{ cita.fechaHora | date:'dd MMM yyyy, h:mm a' }}</h2>
+          <h2>{{ cita.fechaHora | date: 'dd MMM yyyy, h:mm a' }}</h2>
         </ion-label>
       </ion-item>
     </ng-container>
@@ -57,12 +57,22 @@
     </ion-col>
   </ion-row>
 
-  <!-- Tercer botón (Consultas Pasadas) debajo de los primeros dos -->
+  <!-- Botón Consultas Pasadas -->
   <ion-row class="ion-margin-top" justify-content-center>
     <ion-col size="auto">
       <ion-button class="square-button" [routerLink]="['/consultas-pasadas']">
         <ion-icon slot="start" name="time" class="large-icon"></ion-icon>
         <ion-label>Consultas Pasadas</ion-label>
+      </ion-button>
+    </ion-col>
+  </ion-row>
+
+  <!-- Botón Consultorios Cercanos -->
+  <ion-row class="ion-margin-top" justify-content-center>
+    <ion-col size="auto">
+      <ion-button class="square-button" [routerLink]="['/consultorios-cercanos']">
+        <ion-icon slot="start" name="navigate" class="large-icon"></ion-icon>
+        <ion-label>Consultorios Cercanos</ion-label>
       </ion-button>
     </ion-col>
   </ion-row>

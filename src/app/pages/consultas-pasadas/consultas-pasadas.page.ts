@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CitasService } from '../services/citas.service';
+import { CitasService } from '../../services/citas.service';
 import { ModalController } from '@ionic/angular';
-import { ModalCamaraComponent } from '../components/modal-camara/modal-camara.component';
+import { ModalCamaraComponent } from '../../components/modal-camara/modal-camara.component';
 
 @Component({
   selector: 'app-consultas-pasadas',

@@ -10,32 +10,38 @@ const routes: Routes = [
   },
   {
     path: 'panel-control',
-    loadChildren: () => import('./panel-control/panel-control.module').then(m => m.PanelControlPageModule),
+    loadChildren: () => import('./pages/panel-control/panel-control.module').then(m => m.PanelControlPageModule),
     canActivate: [AuthGuard], // Protegido por el guard
   },
   {
     path: 'calendario-citas',
-    loadChildren: () => import('./calendario-citas/calendario-citas.module').then(m => m.CalendarioCitasPageModule),
+    loadChildren: () => import('./pages/calendario-citas/calendario-citas.module').then(m => m.CalendarioCitasPageModule),
     canActivate: [AuthGuard], // Protegido por el guard
   },
   {
     path: 'perfil-paciente',
-    loadChildren: () => import('./perfil-paciente/perfil-paciente.module').then(m => m.PerfilPacientePageModule),
+    loadChildren: () => import('./pages/perfil-paciente/perfil-paciente.module').then(m => m.PerfilPacientePageModule),
     canActivate: [AuthGuard], // Protegido por el guard
   },
   {
     path: 'consultas-pasadas',
-    loadChildren: () => import('./consultas-pasadas/consultas-pasadas.module').then(m => m.ConsultasPasadasPageModule),
+    loadChildren: () => import('./pages/consultas-pasadas/consultas-pasadas.module').then(m => m.ConsultasPasadasPageModule),
     canActivate: [AuthGuard], // Protegido por el guard
   },
   {
     path: 'registro',
-    loadChildren: () => import('./registro/registro.module').then(m => m.RegistroPageModule),
+    loadChildren: () => import('./pages/registro/registro.module').then(m => m.RegistroPageModule),
   },
   {
     path: 'login',
-    loadChildren: () => import('./login/login.module').then(m => m.LoginPageModule),
+    loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule),
+  },
+  {
+    path: 'consultorios-cercanos',
+    loadChildren: () => import('./pages/consultorios-cercanos/consultorios-cercanos.module').then( m => m.ConsultoriosCercanosPageModule),
+    canActivate: [AuthGuard], // Protegido por el guard
   }
+
 ];
 
 @NgModule({
