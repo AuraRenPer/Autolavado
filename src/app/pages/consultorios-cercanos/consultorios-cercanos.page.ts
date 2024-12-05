@@ -7,19 +7,17 @@ import { Component, AfterViewInit } from '@angular/core';
 })
 export class ConsultoriosCercanosPage implements AfterViewInit {
   map: google.maps.Map | undefined;
-  mapVisible = false; // Controla la visibilidad del mapa
   markers: google.maps.marker.AdvancedMarkerElement[] = []; // Almacena los marcadores
 
   constructor() {}
 
   async ngAfterViewInit() {
-    // El mapa no se carga automáticamente
+    // Cargar el mapa automáticamente al cargar la página
+    await this.loadMap();
   }
 
   async loadMap() {
     try {
-      this.mapVisible = true; // Mostrar el mapa
-
       // Obtener la ubicación del usuario
       const position = await this.getUserLocation();
 
@@ -29,7 +27,6 @@ export class ConsultoriosCercanosPage implements AfterViewInit {
         zoom: 15,
         mapId: '4d94bdd0d19eaa6f', // Reemplaza con tu Map ID
       };
-      
 
       const mapElement = document.getElementById('map') as HTMLElement;
       const { Map } = await google.maps.importLibrary('maps') as google.maps.MapsLibrary;
@@ -44,14 +41,14 @@ export class ConsultoriosCercanosPage implements AfterViewInit {
         title: 'Tu ubicación',
       });
 
-      // Buscar lugares con "consultorio" en el nombre
-      this.searchNearbyConsultorios(position);
+      // Buscar lugares relacionados con la salud cerca de la ubicación del usuario
+      this.searchNearbyHealthLocations(position);
     } catch (error) {
       console.error('Error al cargar el mapa:', error);
     }
   }
 
-  private async searchNearbyConsultorios(position: { lat: number; lng: number }) {
+  private async searchNearbyHealthLocations(position: { lat: number; lng: number }) {
     if (!this.map) {
       console.error('El mapa no está inicializado.');
       return;
@@ -61,7 +58,7 @@ export class ConsultoriosCercanosPage implements AfterViewInit {
     const request: google.maps.places.TextSearchRequest = {
       location: position,
       radius: 5000, // Radio de búsqueda en metros
-      query: 'consultorio',
+      query: 'salud', // Busca lugares relacionados con la salud
     };
 
     service.textSearch(request, (results, status) => {
