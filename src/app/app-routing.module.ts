@@ -45,8 +45,19 @@ const routes: Routes = [
     path: 'grabar-consulta',
     loadChildren: () => import('./pages/grabar-consulta/grabar-consulta.module').then( m => m.GrabarConsultaPageModule),
     canActivate: [AuthGuard], // Protegido por el guard
-  }
-
+  },
+  {
+    path: 'chat-de-pacientes',
+    loadChildren: () => import('./pages/chat-de-pacientes/chat-de-pacientes.module').then( m => m.ChatDePacientesPageModule),
+    canActivate: [AuthGuard], // Protegido por el guard
+  },
+  {
+    path: 'chat-room/:chatId', // Ruta dinámica para el ID del chat
+    loadChildren: () =>
+      import('./pages/chat-room/chat-room.module').then(
+        (m) => m.ChatRoomPageModule
+      ),
+  },
 
 ];
 

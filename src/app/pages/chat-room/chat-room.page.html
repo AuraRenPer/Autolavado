@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <!-- Botón para regresar al Panel de Control -->
+      <ion-button [routerLink]="['/chat-de-pacientes']">
+        <ion-icon slot="start" name="arrow-back"></ion-icon>
+        Regresar
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Chat</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let message of messages">
+      <ion-label [class.own]="message.sender === currentUserId">
+        <p>{{ message.content }}</p>
+        <span>{{ message.timestamp | date: 'short' }}</span>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-footer>
+    <ion-toolbar>
+      <ion-input [(ngModel)]="newMessage" placeholder="Escribe un mensaje..."></ion-input>
+      <ion-button (click)="sendMessage()">Enviar</ion-button>
+    </ion-toolbar>
+  </ion-footer>
+</ion-content>
