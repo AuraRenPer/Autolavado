@@ -9,30 +9,30 @@
 }
 
 .large-icon {
-  font-size: 48px; /* Tamaño del ícono */
-  margin-bottom: 8px; /* Espacio entre ícono y texto */
+  font-size: 48px;
+  margin-bottom: 8px;
 }
 
 ion-label {
-  font-size: 14px; /* Tamaño del texto */
+  font-size: 14px;
   text-align: center;
 }
 
 /* Vista de escritorio */
 @media (min-width: 768px) {
   .button-row {
-    justify-content: center; /* Centrar horizontalmente */
-    align-items: center; /* Centrar verticalmente */
-    flex-wrap: nowrap; /* Mantener todos los botones en una fila */
+    justify-content: center; /* Centrar los elementos horizontalmente */
+    align-items: center; /* Centrar los elementos verticalmente */
+    flex-wrap: nowrap; /* Una sola fila */
   }
 
   .square-button {
-    width: 200px; /* Tamaño del botón en escritorio */
+    width: 200px; /* Botones cuadrados con ancho fijo */
     height: 200px;
   }
 
   .youtube-container {
-    max-width: 80%; /* Video ocupa el 80% del ancho */
+    max-width: 80%; /* Ancho máximo del 80% */
     margin: 0 auto; /* Centrar horizontalmente */
     display: flex;
     justify-content: center;
@@ -50,24 +50,11 @@ ion-label {
   ion-col {
     width: 50%; /* 2 botones por fila */
     display: flex;
-    justify-content: center;
-  }
-
-  .square-button {
-    width: 90px; /* Tamaño reducido del botón en móvil */
-    height: 90px;
-  }
-
-  .large-icon {
-    font-size: 32px; /* Tamaño reducido del ícono */
-  }
-
-  ion-label {
-    font-size: 12px; /* Tamaño reducido del texto */
+    justify-content: center; /* Centrar horizontalmente */
   }
 
   .youtube-container {
-    max-width: 90%; /* Video ocupa el 90% del ancho */
+    max-width: 90%; /* Ancho máximo del 90% */
     margin: 0 auto; /* Centrar horizontalmente */
     display: flex;
     justify-content: center;

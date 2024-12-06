@@ -51,7 +51,16 @@ export class PanelControlPage implements OnInit {
   async cerrarSesion() {
     try {
       console.log('cerrarSesion: Intentando cerrar sesión.');
-      await this.authService.logout(); // Llamar al método de logout
+
+      // Reiniciar la API de YouTube
+      if (window.YT) {
+        console.log('cerrarSesion: Eliminando instancia de la API de YouTube.');
+        window.YT = undefined; // Reinicia la referencia a la API
+        window.onYouTubeIframeAPIReady = () => {}; // Limpia el callback asignando una función vacía
+      }
+
+      // Lógica de cierre de sesión
+      await this.authService.logout();
       alert('Sesión cerrada exitosamente.');
       this.router.navigate(['/login']); // Redirigir al login
     } catch (error) {
@@ -62,13 +71,13 @@ export class PanelControlPage implements OnInit {
 
   cargarYouTubeAPI() {
     console.log('cargarYouTubeAPI: Verificando si la API de YouTube ya está cargada.');
-    
+
     if (!window.YT) {
       console.log('cargarYouTubeAPI: API de YouTube no encontrada, cargando script.');
       const tag = document.createElement('script');
       tag.src = 'https://www.youtube.com/iframe_api';
       const firstScriptTag = document.getElementsByTagName('script')[0];
-      
+
       if (firstScriptTag?.parentNode) {
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
         console.log('cargarYouTubeAPI: Script de API de YouTube insertado correctamente.');
@@ -88,6 +97,14 @@ export class PanelControlPage implements OnInit {
 
   inicializarReproductor() {
     console.log('inicializarReproductor: Inicializando el reproductor de YouTube.');
+
+    // Destruir un reproductor existente si ya está presente
+    const existingPlayer = document.getElementById('youtube-player');
+    if (existingPlayer && window.YT && window.YT.Player) {
+      console.log('inicializarReproductor: Eliminando reproductor existente.');
+      existingPlayer.innerHTML = ''; // Limpia el contenedor del reproductor
+    }
+
     try {
       new window.YT.Player('youtube-player', {
         height: '315',
