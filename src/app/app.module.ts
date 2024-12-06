@@ -8,6 +8,8 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { ModalCamaraComponent } from './components/modal-camara/modal-camara.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { CallNumber } from '@awesome-cordova-plugins/call-number/ngx';
+
 
 @NgModule({
   declarations: [
@@ -19,7 +21,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
   // or after 30 seconds (whichever comes first).
   registrationStrategy: 'registerWhenStable:30000'
 })],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [CallNumber, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
