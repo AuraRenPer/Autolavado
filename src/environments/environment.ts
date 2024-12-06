@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  youtubeApiKey: 'AIzaSyCmshCy6XXEsW1o78WyAoKQ5BAkTq9lTQE',
   firebase: {
     apiKey: "AIzaSyAxPCxI5GeRFSwkFYgZi9ldb0Hzc8wlGcU",
     authDomain: "consultasmedicas-807b5.firebaseapp.com",

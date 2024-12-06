@@ -1,20 +1,75 @@
 .square-button {
-    width: 200px;          /* Hacer los botones cuadrados */
-    height: 200px;         /* Altura igual a la anchura para hacerlo cuadrado */
+  width: 100%; /* Ocupa todo el ancho del contenedor */
+  aspect-ratio: 1; /* Mantener forma cuadrada */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+.large-icon {
+  font-size: 48px; /* Tamaño del ícono */
+  margin-bottom: 8px; /* Espacio entre ícono y texto */
+}
+
+ion-label {
+  font-size: 14px; /* Tamaño del texto */
+  text-align: center;
+}
+
+/* Vista de escritorio */
+@media (min-width: 768px) {
+  .button-row {
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    flex-wrap: nowrap; /* Mantener todos los botones en una fila */
+  }
+
+  .square-button {
+    width: 200px; /* Tamaño del botón en escritorio */
+    height: 200px;
+  }
+
+  .youtube-container {
+    max-width: 80%; /* Video ocupa el 80% del ancho */
+    margin: 0 auto; /* Centrar horizontalmente */
     display: flex;
-    flex-direction: column;
     justify-content: center;
-    align-items: center;
-    padding: 0;            /* Quitar el padding extra */
   }
-  
+}
+
+/* Vista móvil */
+@media (max-width: 767px) {
+  .button-row {
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    flex-wrap: wrap; /* Dividir en filas */
+  }
+
+  ion-col {
+    width: 50%; /* 2 botones por fila */
+    display: flex;
+    justify-content: center;
+  }
+
+  .square-button {
+    width: 90px; /* Tamaño reducido del botón en móvil */
+    height: 90px;
+  }
+
   .large-icon {
-    font-size: 48px;       /* Hacer el icono más grande */
-    margin-bottom: 8px;    /* Espacio entre el icono y el texto */
+    font-size: 32px; /* Tamaño reducido del ícono */
   }
-  
+
   ion-label {
-    font-size: 14px;       /* Tamaño del texto */
-    text-align: center;    /* Alinear el texto en el centro */
+    font-size: 12px; /* Tamaño reducido del texto */
   }
-  
+
+  .youtube-container {
+    max-width: 90%; /* Video ocupa el 90% del ancho */
+    margin: 0 auto; /* Centrar horizontalmente */
+    display: flex;
+    justify-content: center;
+  }
+}

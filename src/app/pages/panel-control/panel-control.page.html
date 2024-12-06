@@ -1,13 +1,12 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <!-- Botón para cerrar sesión -->
       <ion-button (click)="cerrarSesion()">
         <ion-icon slot="start" name="log-out"></ion-icon>
         Cerrar Sesión
       </ion-button>
     </ion-buttons>
-    <ion-title>Consultas medicas</ion-title>
+    <ion-title>Consultas médicas</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -17,9 +16,7 @@
       <ion-label>Tus próximas citas</ion-label>
     </ion-list-header>
 
-    <!-- Verificar si hay citas disponibles -->
     <ng-container *ngIf="citasProximas.length > 0; else noCitas">
-      <!-- Iterar sobre las citas disponibles -->
       <ion-item *ngFor="let cita of citasProximas">
         <ion-thumbnail slot="start" *ngIf="cita.imagenUrl">
           <img [src]="cita.imagenUrl" alt="Imagen de la cita" />
@@ -30,7 +27,6 @@
       </ion-item>
     </ng-container>
 
-    <!-- Plantilla alternativa cuando no hay citas -->
     <ng-template #noCitas>
       <ion-item>
         <ion-label>No hay citas próximas</ion-label>
@@ -38,42 +34,43 @@
     </ng-template>
   </ion-list>
 
-  <!-- Contenedor para los botones de navegación -->
-  <ion-row class="ion-margin-top" justify-content-center>
-    <!-- Primer botón (Calendario) -->
-    <ion-col size="auto">
-      <ion-button class="square-button" [routerLink]="['/calendario-citas']">
-        <ion-icon slot="start" name="calendar" class="large-icon"></ion-icon>
-        <ion-label>Ir al Calendario</ion-label>
-      </ion-button>
-    </ion-col>
+  <!-- Contenedor para los botones -->
+  <ion-grid>
+    <ion-row class="button-row">
+      <ion-col size="6" size-md="auto">
+        <ion-button class="square-button" [routerLink]="['/calendario-citas']">
+          <ion-icon slot="start" name="calendar" class="large-icon"></ion-icon>
+          <ion-label>Ir al Calendario</ion-label>
+        </ion-button>
+      </ion-col>
 
-    <!-- Segundo botón (Perfil) -->
-    <ion-col size="auto">
-      <ion-button class="square-button" [routerLink]="['/perfil-paciente']">
-        <ion-icon slot="start" name="person" class="large-icon"></ion-icon>
-        <ion-label>Ir al Perfil</ion-label>
-      </ion-button>
-    </ion-col>
-  </ion-row>
+      <ion-col size="6" size-md="auto">
+        <ion-button class="square-button" [routerLink]="['/perfil-paciente']">
+          <ion-icon slot="start" name="person" class="large-icon"></ion-icon>
+          <ion-label>Ir al Perfil</ion-label>
+        </ion-button>
+      </ion-col>
 
-  <!-- Botón Consultas Pasadas -->
-  <ion-row class="ion-margin-top" justify-content-center>
-    <ion-col size="auto">
-      <ion-button class="square-button" [routerLink]="['/consultas-pasadas']">
-        <ion-icon slot="start" name="time" class="large-icon"></ion-icon>
-        <ion-label>Consultas Pasadas</ion-label>
-      </ion-button>
-    </ion-col>
-  </ion-row>
+      <ion-col size="6" size-md="auto">
+        <ion-button class="square-button" [routerLink]="['/consultas-pasadas']">
+          <ion-icon slot="start" name="time" class="large-icon"></ion-icon>
+          <ion-label>Consultas Pasadas</ion-label>
+        </ion-button>
+      </ion-col>
 
-  <!-- Botón Consultorios Cercanos -->
-  <ion-row class="ion-margin-top" justify-content-center>
-    <ion-col size="auto">
-      <ion-button class="square-button" [routerLink]="['/consultorios-cercanos']">
-        <ion-icon slot="start" name="navigate" class="large-icon"></ion-icon>
-        <ion-label>Consultorios Cercanos</ion-label>
-      </ion-button>
+      <ion-col size="6" size-md="auto">
+        <ion-button class="square-button" [routerLink]="['/consultorios-cercanos']">
+          <ion-icon slot="start" name="navigate" class="large-icon"></ion-icon>
+          <ion-label>Consultorios Cercanos</ion-label>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Contenedor del reproductor de YouTube -->
+  <ion-row class="youtube-row" justify-content-center>
+    <ion-col size="12" class="youtube-container">
+      <div id="youtube-player"></div>
     </ion-col>
   </ion-row>
 </ion-content>
