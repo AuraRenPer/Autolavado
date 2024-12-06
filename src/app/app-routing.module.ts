@@ -40,7 +40,13 @@ const routes: Routes = [
     path: 'consultorios-cercanos',
     loadChildren: () => import('./pages/consultorios-cercanos/consultorios-cercanos.module').then( m => m.ConsultoriosCercanosPageModule),
     canActivate: [AuthGuard], // Protegido por el guard
+  },
+  {
+    path: 'grabar-consulta',
+    loadChildren: () => import('./pages/grabar-consulta/grabar-consulta.module').then( m => m.GrabarConsultaPageModule),
+    canActivate: [AuthGuard], // Protegido por el guard
   }
+
 
 ];
 

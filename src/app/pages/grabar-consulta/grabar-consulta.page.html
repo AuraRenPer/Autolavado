@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Grabar Consulta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="isMobile; else webRecorder">
+    <ion-button expand="full" (click)="openVideoRecorderModal()">
+      Abrir Grabador de Video
+    </ion-button>
+  </ng-container>
+
+  <ng-template #webRecorder>
+    <app-video-recorder-web></app-video-recorder-web>
+  </ng-template>
+</ion-content>

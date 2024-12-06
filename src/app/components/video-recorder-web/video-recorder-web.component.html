@@ -1,0 +1,18 @@
+<div>
+  <video #video autoplay muted></video>
+
+  <div>
+    <ion-button (click)="startRecording()" [disabled]="isRecording">
+      Iniciar Grabación
+    </ion-button>
+    <ion-button (click)="stopRecording()" [disabled]="!isRecording">
+      Detener Grabación
+    </ion-button>
+    <ion-button (click)="downloadVideo()" [disabled]="!videoBlobUrl">
+      Descargar Video
+    </ion-button>
+    <ion-button (click)="shareVideo()" [disabled]="!videoBlobUrl">
+      Compartir Video
+    </ion-button>
+  </div>
+</div>
