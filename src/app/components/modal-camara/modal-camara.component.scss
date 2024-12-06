@@ -1,0 +1,49 @@
+.camera-modal-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Ocupa toda la altura de la pantalla */
+    padding: 20px; /* Espaciado interno */
+    box-sizing: border-box; /* Asegura que el padding no afecte al tamaño total */
+  
+    .video-preview {
+      width: 100%; /* El video ocupa todo el ancho disponible */
+      max-width: 600px; /* Ancho máximo para evitar videos muy grandes */
+      margin-bottom: 20px; /* Espaciado inferior entre el video y los botones */
+    }
+  
+    img {
+      max-width: 100%; /* Imagen responsiva */
+      height: auto; /* Mantiene la proporción */
+      margin-bottom: 20px; /* Espaciado entre la imagen y los botones */
+      border-radius: 10px; /* Bordes redondeados */
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para la imagen */
+    }
+  
+    .button-container {
+      display: flex;
+      flex-wrap: wrap; /* Permite que los botones se ajusten si el espacio es reducido */
+      justify-content: center; /* Centra los botones horizontalmente */
+      gap: 10px; /* Espaciado entre botones */
+  
+      ion-button {
+        flex: 1 1 calc(50% - 20px); /* Botones distribuidos uniformemente */
+        max-width: 150px; /* Tamaño máximo de los botones */
+        min-width: 100px; /* Tamaño mínimo de los botones */
+      }
+    }
+  
+    .icon-button {
+      height: 60px; /* Altura uniforme para los botones */
+      width: 100%; /* Botones ocupan el 100% del ancho disponible */
+      max-width: 300px; /* Limita el tamaño máximo */
+      display: flex; /* Asegura la alineación del icono */
+      align-items: center; /* Centra el icono verticalmente */
+      justify-content: center; /* Centra el icono horizontalmente */
+      ion-icon {
+        font-size: 24px; /* Tamaño del icono */
+      }
+    }
+  }
+  

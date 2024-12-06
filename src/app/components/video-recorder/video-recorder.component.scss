@@ -1,0 +1,22 @@
+.button-container {
+    display: flex;
+    flex-direction: column; /* Organiza los botones en una columna */
+    align-items: center; /* Centra horizontalmente */
+    justify-content: center; /* Centra verticalmente */
+    height: 100vh; /* Asegura que el contenedor ocupe toda la pantalla */
+    padding: 20px; /* Espaciado interno */
+  
+    ion-button {
+      margin: 10px 0; /* Espaciado entre botones */
+      height: 60px; /* Aumenta el tamaño del botón */
+      width: 100%; /* Ocupa el 100% del ancho */
+      max-width: 300px; /* Tamaño máximo para evitar que sean demasiado anchos */
+      display: flex; /* Asegura alineación del icono */
+      align-items: center; /* Centra el icono verticalmente */
+      justify-content: center; /* Centra el icono horizontalmente */
+      ion-icon {
+        font-size: 24px; /* Tamaño del icono */
+      }
+    }
+  }
+  

@@ -1,6 +1,14 @@
-<div>
-  <ion-button (click)="recordVideo()">Grabar Video</ion-button>
-  <ion-button *ngIf="videoPath" (click)="shareVideo()">Compartir Video</ion-button>
-  <ion-button *ngIf="videoPath" (click)="saveToGallery()">Guardar en Galería</ion-button>
-  <ion-button color="danger" (click)="closeModal()">Cerrar</ion-button>
+<div class="button-container">
+  <ion-button expand="block" (click)="recordVideo()" class="icon-button">
+    <ion-icon name="videocam" slot="icon-only"></ion-icon>
+  </ion-button>
+  <ion-button *ngIf="videoPath" expand="block" (click)="shareVideo()" class="icon-button">
+    <ion-icon name="share" slot="icon-only"></ion-icon>
+  </ion-button>
+  <ion-button *ngIf="videoPath" expand="block" (click)="saveToGallery()" class="icon-button">
+    <ion-icon name="download" slot="icon-only"></ion-icon>
+  </ion-button>
+  <ion-button color="danger" expand="block" (click)="closeModal()" class="icon-button">
+    <ion-icon name="close" slot="icon-only"></ion-icon>
+  </ion-button>
 </div>
