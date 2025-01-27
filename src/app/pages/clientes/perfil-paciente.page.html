@@ -1,0 +1,76 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <!-- Botón para regresar al Panel de Control -->
+      <ion-button [routerLink]="['/panel-control']">
+        <ion-icon slot="start" name="arrow-back"></ion-icon>
+        Regresar
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Listado de clientes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true" scroll-y="true">
+  <!-- Formulario de Registro de Datos Básicos -->
+  <ion-card *ngIf="!datosGuardados">
+    <ion-card-header>
+      <ion-card-title>Listado de Clientes</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let cliente of clientes">
+          <ion-label>
+            <h2>{{ cliente.nombre }}</h2>
+            <p>{{ cliente.contacto }}</p>
+          </ion-label>
+          <ion-button expand="block" (click)="agregarComentario()">
+            Editar
+          </ion-button>
+          <ion-button expand="block" (click)="agregarComentario()">
+            Eliminar
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Contenedor de Visualización de Datos Guardados -->
+  <ion-card *ngIf="datosGuardados">
+    <ion-card-header>
+      <ion-card-title>Información del Paciente</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><strong>Nombre:</strong> {{ datosGuardados!.nombre }}</p>
+      <p><strong>Contacto:</strong> {{ datosGuardados!.contacto }}</p>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Lista de Comentarios Guardados -->
+  <ion-card *ngIf="datosGuardados?.comentarios?.length">
+    <ion-card-header>
+      <ion-card-title>Comentarios Guardados</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let comentario of datosGuardados!.comentarios">
+          <ion-label>{{ comentario }}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Sección de Comentarios 
+  <ion-card *ngIf="datosGuardados">
+    <ion-card-header>
+      <ion-card-title>Agregar Comentario</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="stacked">Comentario</ion-label>
+        <ion-textarea [(ngModel)]="nuevoComentario" placeholder="Comentario breve"></ion-textarea>
+      </ion-item>
+      <ion-button expand="block" (click)="agregarComentario()">Agregar Comentario</ion-button>
+    </ion-card-content>
+  </ion-card> -->
+</ion-content>

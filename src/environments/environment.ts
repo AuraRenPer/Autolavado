@@ -8,6 +8,7 @@ export const environment = {
   firebase: {
     apiKey: "AIzaSyBOFFZrO72Slf_LO2gw9xCsnvLCeUNkclo",
     authDomain: "autolavado-1d518.firebaseapp.com",
+    databaseURL: "https://autolavado-1d518-default-rtdb.firebaseio.com",
     projectId: "autolavado-1d518",
     storageBucket: "autolavado-1d518.firebasestorage.app",
     messagingSenderId: "408123920717",

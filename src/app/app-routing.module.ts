@@ -24,6 +24,11 @@ const routes: Routes = [
     canActivate: [AuthGuard], // Protegido por el guard
   },
   {
+    path: 'clientes',
+    loadChildren: () => import('./pages/clientes/perfil-paciente.module').then(m => m.PerfilPacientePageModule),
+    canActivate: [AuthGuard], // Protegido por el guard
+  },
+  {
     path: 'consultas-pasadas',
     loadChildren: () => import('./pages/consultas-pasadas/consultas-pasadas.module').then(m => m.ConsultasPasadasPageModule),
     canActivate: [AuthGuard], // Protegido por el guard
