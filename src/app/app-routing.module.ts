@@ -15,7 +15,7 @@ const routes: Routes = [
   },
   {
     path: 'calendario-citas',
-    loadChildren: () => import('./pages/calendario-citas/calendario-citas.module').then(m => m.CalendarioCitasPageModule),
+    loadChildren: () => import('./pages/calendario-citas/calendario-servicios.module').then(m => m.CalendarioServiciosPageModule),
     canActivate: [AuthGuard], // Protegido por el guard
   },
   {
@@ -30,7 +30,7 @@ const routes: Routes = [
   },
   {
     path: 'consultas-pasadas',
-    loadChildren: () => import('./pages/consultas-pasadas/consultas-pasadas.module').then(m => m.ConsultasPasadasPageModule),
+    loadChildren: () => import('./pages/consultas-pasadas/consultas-pasadas.module').then(m => m.ServiciosPasadosPageModule),
     canActivate: [AuthGuard], // Protegido por el guard
   },
   {

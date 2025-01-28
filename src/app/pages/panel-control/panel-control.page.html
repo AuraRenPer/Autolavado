@@ -16,8 +16,8 @@
       <ion-label>Tus próximas citas</ion-label>
     </ion-list-header>
 
-    <ng-container *ngIf="citasProximas.length > 0; else noCitas">
-      <ion-item *ngFor="let cita of citasProximas">
+    <ng-container *ngIf="serviciosProximas.length > 0; else noCitas">
+      <ion-item *ngFor="let cita of serviciosProximas">
         <ion-thumbnail slot="start" *ngIf="cita.imagenUrl">
           <img [src]="cita.imagenUrl" alt="Imagen de la cita" />
         </ion-thumbnail>

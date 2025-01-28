@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { ConsultasPasadasPageRoutingModule } from './consultas-pasadas-routing.module';
+import { ServiciosPasadosPageRoutingModule } from './consultas-pasadas-routing.module';
 
-import { ConsultasPasadasPage } from './consultas-pasadas.page';
+import { ServiciosPasadosPage } from './consultas-pasadas.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ConsultasPasadasPageRoutingModule
+    ServiciosPasadosPageRoutingModule
   ],
-  declarations: [ConsultasPasadasPage]
+  declarations: [ServiciosPasadosPage]
 })
-export class ConsultasPasadasPageModule {}
+export class ServiciosPasadosPageModule {}

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CitasService } from '../../services/citas.service';
+import { ServiciosService } from '../../services/servicios.service';
 import { AuthService } from '../../services/auth.service'; // Importar el servicio de autenticación
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment'; // Importar el archivo de entorno
@@ -17,11 +17,11 @@ declare var window: Window;
   styleUrls: ['./panel-control.page.scss'],
 })
 export class PanelControlPage implements OnInit {
-  citasProximas: Array<{ id: string; fechaHora: Date; imagenUrl?: string }> = [];
+  serviciosProximas: Array<{ id: string; fechaHora: Date; imagenUrl?: string }> = [];
   private youtubeApiKey: string = environment.youtubeApiKey; // Asignar la clave de API desde el entorno
 
   constructor(
-    private citasService: CitasService,
+    private serviciosService: ServiciosService,
     private authService: AuthService, // Inyectar el servicio de autenticación
     private router: Router // Inyectar el router para redirigir
   ) {}
@@ -36,15 +36,15 @@ export class PanelControlPage implements OnInit {
     const ahora = new Date();
     console.log('cargarCitasProximas: Obteniendo citas próximas.');
 
-    this.citasService.citas$.subscribe((citas) => {
-      this.citasProximas = citas
+    this.serviciosService.servicios$.subscribe((servicios) => {
+      this.serviciosProximas = servicios
         .map((cita) => ({
           ...cita,
           fechaHora: new Date(cita.fechaHora),
         }))
         .filter((cita) => cita.fechaHora > ahora); // Filtrar solo las citas futuras
 
-      console.log('Citas próximas actualizadas:', this.citasProximas);
+      console.log('Citas próximas actualizadas:', this.serviciosProximas);
     });
   }
 

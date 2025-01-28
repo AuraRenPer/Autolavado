@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button [routerLink]="['/panel-control']">
+        <ion-icon slot="start" name="arrow-back"></ion-icon>
+        Regresar
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Calendario de Servicios</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true">
+  <!-- Formulario para agregar un servicio -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Agregar Servicio</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="stacked">Cliente</ion-label>
+        <ion-input [(ngModel)]="servicio.cliente" placeholder="Nombre del cliente"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Vehículo</ion-label>
+        <ion-input [(ngModel)]="servicio.vehiculo" placeholder="Modelo del vehículo"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Tipo de Servicio</ion-label>
+        <ion-select [(ngModel)]="servicio.tipoServicio" placeholder="Seleccionar">
+          <ion-select-option value="Lavado Completo">Lavado Completo</ion-select-option>
+          <ion-select-option value="Lavado Interior">Lavado Interior</ion-select-option>
+          <ion-select-option value="Lavado Exterior">Lavado Exterior</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Fecha y Hora</ion-label>
+        <ion-datetime [(ngModel)]="servicio.fechaHora" display-format="YYYY-MM-DD HH:mm" placeholder="Seleccionar fecha y hora"></ion-datetime>
+      </ion-item>
+      <ion-button expand="block" color="primary" (click)="agregarServicio()">Agregar Servicio</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Lista de servicios próximos -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Servicios Próximos</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let servicio of serviciosProximos">
+          <ion-label>
+            <h2>{{ servicio.cliente }} - {{ servicio.vehiculo }}</h2>
+            <p>{{ servicio.tipoServicio }}</p>
+            <p>{{ servicio.fechaHora | date: 'dd MMM yyyy, h:mm a' }}</p>
+          </ion-label>
+          <ion-button color="danger" (click)="eliminarServicio(servicio.id)">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-button>
+        </ion-item>
+        <ion-item *ngIf="serviciosProximos.length === 0">
+          <ion-label>No hay servicios próximos programados.</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
