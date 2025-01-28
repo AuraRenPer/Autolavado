@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ConsultoriosCercanosPage } from './consultorios-cercanos.page';
+import { ConsultoriosCercanosPage } from './autolavados-cercanos.page';
 
 describe('ConsultoriosCercanosPage', () => {
   let component: ConsultoriosCercanosPage;

@@ -42,8 +42,8 @@ const routes: Routes = [
     loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule),
   },
   {
-    path: 'consultorios-cercanos',
-    loadChildren: () => import('./pages/consultorios-cercanos/consultorios-cercanos.module').then( m => m.ConsultoriosCercanosPageModule),
+    path: 'autolavados-cercanos',
+    loadChildren: () => import('./pages/autolavados-cercanos/autolavados-cercanos.module').then( m => m.AutolavadosCercanosPageModule),
     canActivate: [AuthGuard], // Protegido por el guard
   },
   {

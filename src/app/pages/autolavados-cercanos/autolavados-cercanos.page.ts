@@ -1,11 +1,11 @@
 import { Component, AfterViewInit } from '@angular/core';
 
 @Component({
-  selector: 'app-consultorios-cercanos',
-  templateUrl: './consultorios-cercanos.page.html',
-  styleUrls: ['./consultorios-cercanos.page.scss'],
+  selector: 'app-autolavados-cercanos',
+  templateUrl: './autolavados-cercanos.page.html',
+  styleUrls: ['./autolavados-cercanos.page.scss'],
 })
-export class ConsultoriosCercanosPage implements AfterViewInit {
+export class AutolavadosCercanosPage implements AfterViewInit {
   map: google.maps.Map | undefined;
   markers: google.maps.marker.AdvancedMarkerElement[] = []; // Almacena los marcadores
 
@@ -58,7 +58,7 @@ export class ConsultoriosCercanosPage implements AfterViewInit {
     const request: google.maps.places.TextSearchRequest = {
       location: position,
       radius: 5000, // Radio de búsqueda en metros
-      query: 'salud', // Busca lugares relacionados con la salud
+      query: 'autolavado', // Busca lugares relacionados con la salud
     };
 
     service.textSearch(request, (results, status) => {
