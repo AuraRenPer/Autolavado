@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ChatDePacientesPage } from './chat-de-pacientes.page';
+import { ChatDePacientesPage } from './chat-de-clientes.page';
 
 describe('ChatDePacientesPage', () => {
   let component: ChatDePacientesPage;
