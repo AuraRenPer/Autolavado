@@ -1,4 +1,7 @@
 .square-button {
+  --background: #4caf50; /* Color de fondo (verde) */
+  --background-hover: #45a049; /* Color al pasar el mouse */
+  --color: white; /* Color del texto */
   width: 100%; /* Ocupa todo el ancho del contenedor */
   aspect-ratio: 1; /* Mantener forma cuadrada */
   display: flex;

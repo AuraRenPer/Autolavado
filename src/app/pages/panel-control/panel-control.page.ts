@@ -109,7 +109,7 @@ export class PanelControlPage implements OnInit {
       new window.YT.Player('youtube-player', {
         height: '315',
         width: '560',
-        videoId: 'mO_95LQook4', 
+        videoId: 'pr6cpARvnKs', 
         events: {
           onReady: this.onPlayerReady,
           onError: this.onPlayerError,
