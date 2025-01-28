@@ -48,7 +48,7 @@ const routes: Routes = [
   },
   {
     path: 'grabar-consulta',
-    loadChildren: () => import('./pages/grabar-consulta/grabar-consulta.module').then( m => m.GrabarConsultaPageModule),
+    loadChildren: () => import('./pages/grabar-servicio/grabar-servicio.module').then( m => m.GrabarServicioPageModule),
     canActivate: [AuthGuard], // Protegido por el guard
   },
   {

@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { GrabarConsultaPage } from './grabar-consulta.page';
+import { GrabarServicioPage } from './grabar-servicio.page';
 
 describe('GrabarConsultaPage', () => {
-  let component: GrabarConsultaPage;
-  let fixture: ComponentFixture<GrabarConsultaPage>;
+  let component: GrabarServicioPage;
+  let fixture: ComponentFixture<GrabarServicioPage>;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GrabarConsultaPage);
+    fixture = TestBed.createComponent(GrabarServicioPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

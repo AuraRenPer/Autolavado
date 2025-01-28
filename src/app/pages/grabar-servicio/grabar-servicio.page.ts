@@ -3,11 +3,11 @@ import { ModalController, Platform } from '@ionic/angular';
 import { VideoRecorderComponent } from '../../components/video-recorder/video-recorder.component';
 
 @Component({
-  selector: 'app-grabar-consulta',
-  templateUrl: './grabar-consulta.page.html',
-  styleUrls: ['./grabar-consulta.page.scss'],
+  selector: 'app-grabar-servicio',
+  templateUrl: './grabar-servicio.page.html',
+  styleUrls: ['./grabar-servicio.page.scss'],
 })
-export class GrabarConsultaPage {
+export class GrabarServicioPage {
   isMobile: boolean;
 
   constructor(private modalController: ModalController, private platform: Platform) {

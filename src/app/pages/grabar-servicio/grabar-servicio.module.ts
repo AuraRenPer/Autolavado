@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { GrabarConsultaPageRoutingModule } from './grabar-consulta-routing.module';
-import { GrabarConsultaPage } from './grabar-consulta.page';
+import { GrabarServicioPageRoutingModule } from './grabar-servicio-routing.module';
+import { GrabarServicioPage } from './grabar-servicio.page';
 import { VideoRecorderWebComponent } from '../../components/video-recorder-web/video-recorder-web.component'; 
 
 @NgModule({
@@ -11,11 +11,11 @@ import { VideoRecorderWebComponent } from '../../components/video-recorder-web/v
     CommonModule,
     FormsModule,
     IonicModule,
-    GrabarConsultaPageRoutingModule,
+    GrabarServicioPageRoutingModule,
   ],
   declarations: [
-    GrabarConsultaPage,
+    GrabarServicioPage,
     VideoRecorderWebComponent, 
   ],
 })
-export class GrabarConsultaPageModule {}
+export class GrabarServicioPageModule {}
