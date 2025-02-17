@@ -1,0 +1,18 @@
+{
+    "elements": [
+        {"id": "usuarios", "label": "Usuarios", "type": "rectangle", "style": {"fill": "lightgray"}},
+        {"id": "frontend", "label": "Ionic + Angular", "type": "rectangle", "style": {"fill": "lightblue"}},
+        {"id": "realtime_db", "label": "Firebase Realtime Database", "type": "ellipse", "style": {"fill": "lightgreen"}},
+        {"id": "functions", "label": "Firebase Functions", "type": "ellipse", "style": {"fill": "lightcoral"}},
+        {"id": "storage", "label": "Firebase Storage", "type": "ellipse", "style": {"fill": "yellow"}}
+    ],
+    "connections": [
+        {"source": "usuarios", "target": "frontend"},
+        {"source": "frontend", "target": "realtime_db"},
+        {"source": "frontend", "target": "functions"},
+        {"source": "frontend", "target": "storage"},
+        {"source": "realtime_db", "target": "frontend"},
+        {"source": "functions", "target": "frontend"},
+        {"source": "storage", "target": "frontend"}
+    ]
+}

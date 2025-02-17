@@ -5,7 +5,7 @@ import { getDatabase, ref, onValue, push } from 'firebase/database';
   providedIn: 'root',
 })
 export class ChatService {
-  private database = getDatabase();
+  private database = getDatabase(); //Singleton para toda la app
 
   async getMessages(chatId: string) {
     const chatRef = ref(this.database, `chats/${chatId}/messages`);

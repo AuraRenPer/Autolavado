@@ -53,7 +53,7 @@ const routes: Routes = [
   },
   {
     path: 'chat-de-pacientes',
-    loadChildren: () => import('./pages/chat-de-pacientes/chat-de-clientes.module').then( m => m.ChatDeClientesPageModule),
+    loadChildren: () => import('./pages/chat-de-clientes/chat-de-clientes.module').then( m => m.ChatDeClientesPageModule),
     canActivate: [AuthGuard], // Protegido por el guard
   },
   {
