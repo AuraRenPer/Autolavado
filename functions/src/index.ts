@@ -1,19 +1,31 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
 
-// import {onRequest} from "firebase-functions/v2/https";
-// import * as logger from "firebase-functions/logger";
+admin.initializeApp();
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
-
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+export const crearServicio = functions.https.onRequest(async (req, res) => {
+    try {
+      const { cliente, vehiculo, tipoServicio, fechaHora } = req.body;
+  
+      if (!cliente || !vehiculo || !tipoServicio || !fechaHora) {
+        res.status(400).json({ error: "Faltan datos obligatorios" });
+        return;
+      }
+  
+      const db = admin.firestore();
+      const servicioRef = db.collection("servicios").doc();
+      
+      await servicioRef.set({
+        cliente,
+        vehiculo,
+        tipoServicio,
+        fechaHora,
+        estado: "pendiente",
+      });
+  
+      res.status(201).json({ mensaje: "Servicio registrado exitosamente" });
+    } catch (error) {
+      res.status(500).json({ error: "Error al registrar el servicio", detalle: (error as Error).message });
+    }
+  });
+  
