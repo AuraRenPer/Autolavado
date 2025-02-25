@@ -1,33 +1,84 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { AuthService } from '../../services/auth.service'; // Asegúrate de que el path sea correcto
 
+//author: Pérez Ugalde Aura Renata
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  selector: 'app-home',
+  templateUrl: 'login.page.html',
+  styleUrls: ['login.page.scss'],
+  standalone: false,
 })
 export class LoginPage {
-  email: string = '';
+  username: string = '';
   password: string = '';
+  isValid: boolean = false;
+  showModal: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private alertCtrl: AlertController,
+    private route: Router,
+    private authService: AuthService,
+    private loadingCtrl: LoadingController,
+    private toastCtrl: ToastController
+  ) { }
+
+  validateInputs() {
+    this.username = this.username.toLowerCase();
+    const usernameValid = this.username.trim().length > 0 && !/\s/.test(this.username);
+    const passwordValid = this.password.trim().length > 0 && !/\s/.test(this.password);
+    this.isValid = usernameValid && passwordValid;
+  }
 
   async iniciarSesion() {
-    if (this.email && this.password) {
-      try {
-        await this.authService.login(this.email, this.password);
-        alert('Inicio de sesión exitoso.');
-        this.router.navigate(['/panel-control']); // Redirige al panel principal
-      } catch (error) {
-        if (error instanceof Error) {
-          alert('Error al iniciar sesión: ' + error.message);
-        } else {
-          alert('Error desconocido al iniciar sesión.');
-        }
-      }
-    } else {
-      alert('Por favor, ingresa un correo y una contraseña.');
+    if (!this.isValid) {
+      this.showToast('Por favor, ingresa un usuario y contraseña válidos.');
+      return;
     }
+
+    const loading = await this.loadingCtrl.create({
+      message: 'Iniciando sesión...',
+      spinner: 'circles',
+    });
+
+    await loading.present();
+
+    try {
+      const result = await this.authService.loginUser(this.username, this.password);
+
+      if (result.success) {
+        this.showToast('Inicio de sesión exitoso.');
+        this.route.navigate(['/panel-control']); // Redirigir a la página principal
+      } else {
+        this.showToast(result.message);
+      }
+    } catch (error) {
+      console.error('Error en login:', error);
+      this.showToast('Ocurrió un error inesperado.');
+    } finally {
+      loading.dismiss();
+    }
+  }
+
+  async showToast(message: string) {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 3000,
+      position: 'bottom',
+    });
+    await toast.present();
+  }
+
+  goRegister() {
+    this.route.navigate(['/registro']);
+  }
+
+  openModal() {
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
   }
 }

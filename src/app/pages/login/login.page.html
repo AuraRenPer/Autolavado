@@ -1,22 +1,50 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Iniciar Sesión</ion-title>
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title class="ion-text-center">Inicia Sesión</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-item>
-    <ion-label position="stacked">Correo Electrónico</ion-label>
-    <ion-input [(ngModel)]="email" type="email" placeholder="Ingresa tu correo"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label position="stacked">Contraseña</ion-label>
-    <ion-input [(ngModel)]="password" type="password" placeholder="Ingresa tu contraseña"></ion-input>
-  </ion-item>
-  <ion-button expand="block" (click)="iniciarSesion()">Iniciar Sesión</ion-button>
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="12" size-md="6">
+        <!-- Username -->
+        <ion-item>
+          <ion-label position="floating">Username</ion-label>
+          <ion-input [(ngModel)]="username" (ionInput)="validateInputs()" type="text" required></ion-input>
+        </ion-item>
 
-  <!-- Botón para redirigir al Registro -->
-  <ion-button expand="block" fill="outline" [routerLink]="['/registro']">
-    ¿No tienes cuenta? Regístrate
-  </ion-button>
+        <!-- Password -->
+        <ion-item>
+          <ion-label position="floating">Password</ion-label>
+          <ion-input [(ngModel)]="password" (ionInput)="validateInputs()" type="password" required></ion-input>
+        </ion-item>
+
+        <!-- Botón Iniciar Sesión -->
+        <ion-button expand="full" [disabled]="!isValid" (click)="iniciarSesion()">
+          Ingresar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Link para Iniciar Sesión -->
+  <p class="login-link ion-text-center">
+    ¿Aún no tienes cuenta? <a (click)="goRegister()" class="link-style">Registrate aquí</a>
+  </p>
+
+
+  <!-- MODAL -->
+  <ion-modal [isOpen]="showModal">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Información ingresada</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <p><strong>Username:</strong> {{ username }}</p>
+      <p><strong>Password:</strong> {{ password }}</p>
+      <ion-button expand="full" (click)="closeModal()">Cerrar</ion-button>
+    </ion-content>
+  </ion-modal>
 </ion-content>
