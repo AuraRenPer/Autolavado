@@ -1,7 +1,3 @@
-import * as admin from 'firebase-admin';
-import { crearServicio } from './servicios';
+import { crearServicio, obtenerServicios, actualizarServicio, eliminarServicio } from "./servicios"; 
 
-admin.initializeApp();
-
-// Exporta las funciones individualmente
-exports.crearServicio = crearServicio;
+export { crearServicio, obtenerServicios, actualizarServicio, eliminarServicio };
