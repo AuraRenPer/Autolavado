@@ -35,18 +35,25 @@ export class PanelControlPage implements OnInit {
   cargarCitasProximas() {
     const ahora = new Date();
     console.log('cargarCitasProximas: Obteniendo citas próximas.');
-
-    this.serviciosService.servicios$.subscribe((servicios) => {
+  
+    this.serviciosService.obtenerServicios().subscribe((servicios) => {
+      if (!servicios) {
+        console.warn('⚠ No se encontraron citas.');
+        this.serviciosProximas = [];
+        return;
+      }
+  
       this.serviciosProximas = servicios
         .map((cita) => ({
           ...cita,
           fechaHora: new Date(cita.fechaHora),
         }))
         .filter((cita) => cita.fechaHora > ahora); // Filtrar solo las citas futuras
-
-      console.log('Citas próximas actualizadas:', this.serviciosProximas);
+  
+      console.log('✅ Citas próximas actualizadas:', this.serviciosProximas);
     });
   }
+  
 
   async cerrarSesion() {
     try {

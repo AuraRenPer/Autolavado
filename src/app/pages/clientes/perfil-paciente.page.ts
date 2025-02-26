@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { getDatabase, ref, set, push, onValue, update, remove } from 'firebase/database';
-import { getAuth } from 'firebase/auth';
+import { HttpClient } from '@angular/common/http'; // Importamos HttpClient
 import { AlertController, ToastController } from '@ionic/angular';
 
 @Component({
@@ -14,43 +13,30 @@ export class PerfilPacientePage implements OnInit {
   clienteSeleccionado: any = null; // Cliente seleccionado para edición
   datosGuardados: { nombre: string; contacto: string; } | null = null;
 
-  private userId: string | null = null;
-  private database = getDatabase();
+  private apiUrl = 'https://us-central1-autolavado-38624.cloudfunctions.net'; // URL de las funciones
 
   constructor(
+    private http: HttpClient,
     private alertCtrl: AlertController,
     private toastCtrl: ToastController
-  ) { }
+  ) {}
 
   ngOnInit() {
-    const auth = getAuth();
-    const currentUser = auth.currentUser;
-
-    if (currentUser) {
-      this.userId = currentUser.uid;
-      this.cargarClientes();
-    } else {
-      console.error('Usuario no autenticado.');
-    }
+    this.cargarClientes();
   }
 
-  // Cargar clientes desde Firebase
+  // ✅ Obtener clientes desde Firebase Functions
   private cargarClientes() {
-    if (!this.userId) return;
-
-    const clientesRef = ref(this.database, `Clientes`);
-    onValue(clientesRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        this.clientes = Object.keys(data).map((key) => ({ id: key, ...data[key] }));
-        console.log('Clientes cargados:', this.clientes);
-      } else {
-        this.clientes = [];
-        console.log('No se encontraron clientes de firebase.');
-      }
-    });
+    this.http.get(`${this.apiUrl}/obtenerClientes`)
+      .subscribe((data: any) => {
+        this.clientes = data.clientes;
+      }, error => {
+        console.error('Error al obtener clientes:', error);
+        this.mostrarToast('Error al cargar clientes.', 'danger');
+      });
   }
 
+  // ✅ Guardar o actualizar cliente en el backend
   guardarDatos() {
     if (!this.nuevoCliente.nombre.trim() || !this.nuevoCliente.contacto.trim()) {
       this.mostrarToast('Por favor, llena todos los campos.', 'danger');
@@ -58,74 +44,58 @@ export class PerfilPacientePage implements OnInit {
     }
 
     if (this.clienteSeleccionado) {
-      // Actualizar cliente existente
-      const clienteRef = ref(this.database, `Clientes/${this.clienteSeleccionado.id}`); // Ajusta la ruta
-      update(clienteRef, this.nuevoCliente)
-        .then(() => {
-          this.mostrarToast('Cliente actualizado correctamente.', 'success');
-          this.cancelarEdicion();
-        })
-        .catch((error) => {
-          console.error('Error al actualizar cliente:', error);
-          this.mostrarToast('Error al actualizar cliente.', 'danger');
-        });
+      // Editar cliente
+      this.http.put(`${this.apiUrl}/actualizarCliente`, {
+        id: this.clienteSeleccionado.id,
+        ...this.nuevoCliente
+      }).subscribe(() => {
+        this.mostrarToast('Cliente actualizado correctamente.', 'success');
+        this.cancelarEdicion();
+        this.cargarClientes();
+      }, error => {
+        console.error('Error al actualizar cliente:', error);
+        this.mostrarToast('Error al actualizar cliente.', 'danger');
+      });
+
     } else {
       // Agregar nuevo cliente
-      const clientesRef = ref(this.database, `Clientes`); // Ajusta la ruta
-      const nuevoClienteRef = push(clientesRef);
-      set(nuevoClienteRef, this.nuevoCliente)
-        .then(() => {
+      this.http.post(`${this.apiUrl}/registrarCliente`, this.nuevoCliente)
+        .subscribe(() => {
           this.mostrarToast('Cliente agregado correctamente.', 'success');
           this.nuevoCliente = { nombre: '', contacto: '' }; // Limpia el formulario
-        })
-        .catch((error) => {
+          this.cargarClientes();
+        }, error => {
           console.error('Error al agregar cliente:', error);
           this.mostrarToast('Error al agregar cliente.', 'danger');
         });
     }
   }
 
-
-  // Seleccionar cliente para edición
+  // ✅ Seleccionar cliente para edición
   editarCliente(cliente: any) {
     this.clienteSeleccionado = { ...cliente };
     this.nuevoCliente = { ...cliente };
   }
 
-  // Confirmación antes de eliminar cliente
+  // ✅ Eliminar cliente
   eliminarCliente(id: string) {
-    const clienteRef = ref(this.database, `Clientes/${id}`); 
-    remove(clienteRef)
-      .then(() => {
+    this.http.delete(`${this.apiUrl}/eliminarCliente?id=${id}`)
+      .subscribe(() => {
         this.mostrarToast('Cliente eliminado correctamente.', 'success');
-      })
-      .catch((error) => {
-        console.error('Error al eliminar cliente:', error);
-        this.mostrarToast('Error al eliminar cliente.', 'danger');
-      });
-  }
-  
-
-  // Eliminar cliente después de confirmación
-  private confirmarEliminarCliente(id: string) {
-    const clienteRef = ref(this.database, `Clientes/${id}`);
-    remove(clienteRef)
-      .then(() => {
-        this.mostrarToast('Cliente eliminado correctamente.', 'success');
-      })
-      .catch((error) => {
+        this.cargarClientes();
+      }, error => {
         console.error('Error al eliminar cliente:', error);
         this.mostrarToast('Error al eliminar cliente.', 'danger');
       });
   }
 
-  // Cancelar edición
+  // ✅ Cancelar edición
   cancelarEdicion() {
     this.clienteSeleccionado = null;
     this.nuevoCliente = { nombre: '', contacto: '' };
   }
 
-  // Mostrar notificaciones
+  // ✅ Mostrar notificaciones
   private async mostrarToast(mensaje: string, color: string) {
     const toast = await this.toastCtrl.create({
       message: mensaje,
@@ -134,5 +104,4 @@ export class PerfilPacientePage implements OnInit {
     });
     await toast.present();
   }
-
 }

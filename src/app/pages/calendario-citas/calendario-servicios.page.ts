@@ -17,76 +17,82 @@ export class CalendarioServiciosPage implements OnInit {
     fechaHora: '',
   };
 
-  // Listado de servicios próximos
-  serviciosProximos: Array<{
-    id: string;
-    cliente: string;
-    vehiculo: string;
-    tipoServicio: string;
-    fechaHora: string;
-    estado: string;
-  }> = [];
+  serviciosProximos: Array<any> = [];
+  serviciosPasados: Array<any> = [];
 
   constructor(private serviciosService: ServiciosService) {}
 
-  ngOnInit() {
-    // Suscribirse al Observable para recibir servicios en tiempo real
-    this.serviciosService.servicios$.subscribe((servicios) => {
-      this.serviciosProximos = servicios;
-      console.log('Servicios próximos al cargar:', this.serviciosProximos);
-    });
+  async ngOnInit() {
+    await this.cargarServicios();
   }
 
-  agregarServicio() {
-    // Validar campos
+  async cargarServicios() {
+    try {
+      const servicios = (await this.serviciosService.obtenerServicios().toPromise()) || []; // ✅ Asegurar que `servicios` nunca sea undefined
+  
+      const ahora = new Date();
+      this.serviciosPasados = servicios.filter(
+        (servicio) => servicio && servicio.fechaHora && new Date(servicio.fechaHora) < ahora
+      );
+      this.serviciosProximos = servicios.filter(
+        (servicio) => servicio && servicio.fechaHora && new Date(servicio.fechaHora) >= ahora
+      );
+  
+      console.log('✅ Servicios cargados correctamente:', {
+        serviciosPasados: this.serviciosPasados,
+        serviciosProximos: this.serviciosProximos,
+      });
+    } catch (error) {
+      console.error('❌ Error al obtener servicios:', error);
+      this.serviciosPasados = [];
+      this.serviciosProximos = []; // ✅ En caso de error, asignar arrays vacíos para evitar más errores
+    }
+  }
+  
+
+  async agregarServicio() {
     if (
       this.servicio.cliente.trim() &&
       this.servicio.vehiculo.trim() &&
       this.servicio.tipoServicio.trim() &&
       this.servicio.fechaHora.trim()
     ) {
-      const fecha = new Date(this.servicio.fechaHora); // Convertir a objeto Date
+      const fecha = new Date(this.servicio.fechaHora);
 
       if (fecha && !isNaN(fecha.getTime())) {
-        // Crear el nuevo servicio
         const nuevoServicio = {
           ...this.servicio,
-          fechaHora: fecha.toISOString(), // Guardar como cadena ISO
-          estado: 'pendiente', // Estado inicial del servicio
+          fechaHora: fecha.toISOString(), // Convertir a formato ISO
+          estado: 'pendiente',
         };
 
-        // Agregar el servicio a Firebase
-        this.serviciosService
-          .agregarServicio(nuevoServicio)
-          .then(() => {
-            console.log('Servicio agregado exitosamente:', nuevoServicio);
-            alert('Servicio agregado exitosamente.');
-            this.limpiarFormulario(); // Limpiar el formulario después de guardar
-          })
-          .catch((error) => {
-            console.error('Error al agregar servicio:', error);
-            alert('Hubo un error al agregar el servicio. Por favor, inténtalo de nuevo.');
-          });
+        try {
+          await this.serviciosService.agregarServicio(nuevoServicio);
+          console.log('✅ Servicio agregado:', nuevoServicio);
+          alert('Servicio agregado exitosamente.');
+          this.limpiarFormulario();
+          await this.cargarServicios(); // Recargar servicios
+        } catch (error) {
+          console.error('❌ Error al agregar servicio:', error);
+        }
       } else {
         alert('Por favor, selecciona una fecha y hora válida.');
       }
     } else {
-      alert('Todos los campos son obligatorios. Por favor, complétalos antes de continuar.');
+      alert('Todos los campos son obligatorios.');
     }
   }
 
-  eliminarServicio(id: string) {
+  async eliminarServicio(id: string) {
     if (confirm('¿Estás seguro de que deseas eliminar este servicio?')) {
-      this.serviciosService
-        .eliminarServicio(id)
-        .then(() => {
-          console.log('Servicio eliminado:', id);
-          alert('Servicio eliminado exitosamente.');
-        })
-        .catch((error) => {
-          console.error('Error al eliminar servicio:', error);
-          alert('Hubo un error al eliminar el servicio. Por favor, inténtalo de nuevo.');
-        });
+      try {
+        await this.serviciosService.eliminarServicio(id);
+        console.log('✅ Servicio eliminado:', id);
+        alert('Servicio eliminado exitosamente.');
+        await this.cargarServicios(); // Recargar servicios
+      } catch (error) {
+        console.error('❌ Error al eliminar servicio:', error);
+      }
     }
   }
 
