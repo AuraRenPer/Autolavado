@@ -11,19 +11,21 @@ export class ServiciosService {
   constructor(private http: HttpClient) {}
 
   /** ✅ Agregar un servicio (POST) */
-  agregarServicio(servicio: {
+  async agregarServicio(servicio: {
     cliente: string;
     vehiculo: string;
     tipoServicio: string;
     fechaHora: string;
     estado: string;
   }) {
-    return this.http.post(`${this.baseUrl}/crearServicio`, servicio).subscribe({
-      next: (response) => console.log('✅ Servicio agregado con éxito:', response),
-      error: (error) => console.error('❌ Error al agregar servicio:', error),
-    });
+    try {
+      const response = await this.http.post(`${this.baseUrl}/crearServicio`, servicio).toPromise();
+      console.log("✅ Servicio enviado al backend correctamente:", response);
+    } catch (error) {
+      console.error("❌ Error al enviar servicio al backend:", error);
+    }
   }
-
+  
   /** ✅ Obtener todos los servicios (GET) */
   obtenerServicios(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/obtenerServicios`);
