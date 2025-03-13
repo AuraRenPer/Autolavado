@@ -12,14 +12,10 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { CallNumber } from '@awesome-cordova-plugins/call-number/ngx';
 import { MediaCapture } from '@awesome-cordova-plugins/media-capture/ngx'; 
 
-// Firebase imports
-import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-import { provideAuth, getAuth } from '@angular/fire/auth';
-import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+// JWT
 import { JwtHelperService, JWT_OPTIONS } from '@auth0/angular-jwt';
 
 // Importar configuración de Firebase
-import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http'; 
 
 
@@ -43,11 +39,8 @@ import { HttpClientModule } from '@angular/common/http';
     CallNumber,
     MediaCapture,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    { provide: JWT_OPTIONS, useValue: JWT_OPTIONS }, // ✅ Proveer JWT Options
-    JwtHelperService, // ✅ Agregar JwtHelperService como proveedor
-    provideFirebaseApp(() => initializeApp(environment.firebase)), // ✅ Agregar FirebaseApp
-    provideAuth(() => getAuth()), // ✅ Mantener Auth
-    provideFirestore(() => getFirestore()) // ✅ Mantener Firestore
+    { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
+    JwtHelperService, 
 ],
   bootstrap: [AppComponent],
 })

@@ -1,181 +1,134 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, doc, setDoc, getDocs, getDoc, collection, query, where, Timestamp, updateDoc } from '@angular/fire/firestore';
+import { signOut } from '@angular/fire/auth';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { encryptData, decryptData } from '../utils/encryption';
-import { JwtHelperService } from '@auth0/angular-jwt';
-import {
-  Auth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-} from '@angular/fire/auth';
+import { environment } from '../../environments/environment';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
-  private auth = inject(Auth);
-  private firestore = inject(Firestore);
   private router = inject(Router);
-  private jwtHelper = inject(JwtHelperService);
+  private http = inject(HttpClient);
+  private apiUrl = `${environment.apiUrl}`; // URL dinámica de backend
 
-  /**
-   * Registro de usuario
-   */
-  async registerUser(email: string, username: string, password: string) {
+  constructor() { }
+
+  async registerUser(nombre: string, apellido: string, correo: string, password: string, telefono: string) {
     try {
-      // Verificar si hay usuarios en Firestore
-      const usersRef = collection(this.firestore, 'users');
-      const usersSnapshot = await getDocs(usersRef);
-      let role = 'user'; // Por defecto
+      const fechaRegistro = new Date().toISOString(); // 🔹 Se agrega `fechaRegistro`
+      const rol = "cliente"; // 🔹 Se asigna un rol por defecto (puedes cambiarlo si es necesario)
+      const estatus = "activo"; // 🔹 Se asigna un estatus por defecto
 
-      if (usersSnapshot.empty) {
-        role = 'admin'; // Primer usuario será "admin"
+      const response = await this.http.post<{ success?: boolean; mensaje?: string; error?: string }>(
+          `${this.apiUrl}/usuarios_servilink`,
+          { nombre, apellido, correo, password, telefono, fechaRegistro, rol, estatus }
+      ).toPromise();
+
+      if (response && response.error) {
+          return { success: false, message: response.error };
       }
-
-      // Crear el usuario en Firebase Authentication
-      const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
-      const uid = userCredential.user.uid;
-
-      // Obtener permisos del rol
-      const rolesRef = collection(this.firestore, 'roles');
-      const q = query(rolesRef, where('role', '==', role));
-      const querySnapshot = await getDocs(q);
-      let permissions: string[] = [];
-
-      if (!querySnapshot.empty) {
-        const data = querySnapshot.docs[0].data();
-        permissions = data['permissions'] ?? [];
-      }
-
-      // Cifrar la contraseña y el rol
-      const encryptedPassword = await encryptData(password);
-      const encryptedRole = await encryptData(role);
-
-      // Guardar usuario en Firestore
-      await setDoc(doc(this.firestore, 'users', uid), {
-        email,
-        username,
-        password: encryptedPassword,
-        role: encryptedRole,
-        permissions,
-        last_login: new Date()
-      });
 
       return { success: true };
-    } catch (error: unknown) {
+  } catch (error: any) {
       console.error('Error en registro:', error);
-      let errorMessage = 'Ocurrió un error desconocido';
-
-      if (error instanceof Error) {
-        if (error.message.includes('auth/email-already-in-use')) {
-          errorMessage = 'Este correo ya está registrado. Intenta iniciar sesión.';
-        } else if (error.message.includes('auth/weak-password')) {
-          errorMessage = 'La contraseña es demasiado débil.';
-        } else if (error.message.includes('auth/invalid-email')) {
-          errorMessage = 'El formato del correo no es válido.';
-        } else {
-          errorMessage = error.message;
-        }
-      }
-
-      return { success: false, message: errorMessage };
-    }
+      return { success: false, message: error.message || 'Ocurrió un error inesperado' };
   }
+}
 
-  /**
-   * Inicio de sesión
-   */
-  async loginUser(email: string, password: string) {
-    try {
-      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-      const uid = userCredential.user.uid;
-      const userDocRef = doc(this.firestore, 'users', uid);
-      const userDocSnap = await getDoc(userDocRef);
+ 
+async loginUser(correo: string, password: string) {
+  try {
+      const response = await this.http.post<{ mensaje?: string; error?: string; token?: string }>(
+          `${this.apiUrl}/usuarios/login`,
+          { correo, password }
+      ).toPromise();
 
-      if (!userDocSnap.exists()) {
-        throw new Error('Usuario no encontrado');
+      if (response && response.error) {
+          return { success: false, message: response.error };
       }
 
-      const userData = userDocSnap.data();
-      const newLoginTimestamp = Timestamp.now();
-      await updateDoc(userDocRef, { last_login: newLoginTimestamp });
+      if (response?.token) {
+          localStorage.setItem('authToken', response.token);
 
-      // Desencriptar rol y permisos
-      const decryptedRole = await decryptData(userData['role']);
-      const permissions = userData['permissions'] || [];
+          const decodedToken = decodeJWT(response.token);
+          if (decodedToken) {
+              localStorage.setItem('userRole', decodedToken.rol);
+              localStorage.setItem('userPermissions', JSON.stringify(decodedToken.permisos));
+          }
 
-      // Construcción del token JWT
-      const tokenPayload = {
-        uid,
-        email,
-        username: userData['username'],
-        last_login: newLoginTimestamp.toDate().toLocaleString(),
-        role: decryptedRole,
-        permissions,
-        exp: Math.floor(Date.now() / 1000) + 3600 // Expira en 1 hora
-      };
+          return { success: true, token: response.token };
+      }
 
-      console.log("Token Antes de Encriptar:", tokenPayload);
-
-      const token = btoa(JSON.stringify(tokenPayload));
-      localStorage.setItem('authToken', token);
-
-      console.log("Token Encriptado:", token);
-
-      return { success: true, token };
-    } catch (error) {
+      return { success: false, message: 'Error en el login' };
+  } catch (error: any) {
       console.error('Error en login:', error);
-      return { success: false, message: (error as any).message };
-    }
+      return { success: false, message: error.message || 'Ocurrió un error inesperado' };
   }
+}
 
   /**
    * Cerrar sesión
    */
-  async logout() {
-    try {
-      await signOut(this.auth);
-      localStorage.removeItem('authToken');
-      console.log('Usuario cerró sesión.');
-      this.router.navigate(['/login']);
-    } catch (error) {
-      console.error('Error al cerrar sesión:', error);
-      throw error;
-    }
+  logout() {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userPermissions');
+    this.router.navigate(['/login']);
   }
 
-  /**
-   * Obtener el usuario actual desde el token JWT
-   */
-  getCurrentUser() {
-    const token = localStorage.getItem('authToken');
-    if (!token) return null;
 
-    console.log("Token Encriptado Recuperado:", token);
-
-    try {
-      const decodedToken = JSON.parse(atob(token));
-      console.log("Token Desencriptado:", decodedToken);
-      return decodedToken;
-    } catch (error) {
-      console.error("Error al decodificar el token:", error);
-      return null;
-    }
-  }
-
-  /**
-   * Validar si el usuario está autenticado
-   */
-  isAuthenticated(): boolean {
-    const token = this.getToken();
-    return token ? !this.jwtHelper.isTokenExpired(token) : false;
-  }
-
-  /**
-   * Obtener token JWT del usuario autenticado
-   */
   getToken() {
     return localStorage.getItem('authToken');
+  }
+
+  isAuthenticated(): boolean {
+    const token = this.getToken();
+    return token ? true : false;
+  }
+
+
+    getUserPermissions(): string[] {
+      const permissions = localStorage.getItem('userPermissions');
+      return permissions ? JSON.parse(permissions) : [];
+  }
+
+  hasPermission(permission: string): boolean {
+      return this.getUserPermissions().includes(permission);
+  }
+
+  getUserRole(): string {
+      return localStorage.getItem('userRole') || 'user';
+  }
+
+    // Obtener el usuario actual
+    getCurrentUser(): { uid?: string; nombre?: string; apellido?: string; correo?: string; rol?: string; permisos?: string[] } | null {
+      const token = this.getToken();
+      if (!token) return null; // 🔹 Si no hay token, retorna null
+  
+      const decodedToken = decodeJWT(token); // 🔹 Decodifica el JWT
+  
+      if (!decodedToken) return null; // 🔹 Si la decodificación falla, retorna null
+  
+      return {
+          uid: decodedToken.uid || null,
+          nombre: decodedToken.nombre || null,
+          apellido: decodedToken.apellido || null,
+          correo: decodedToken.correo || null,
+          rol: decodedToken.rol || 'user',
+          permisos: decodedToken.permisos || []
+      };
+  }
+  
+}
+
+function decodeJWT(token: string): any {
+  try {
+      const base64Url = token.split('.')[1]; // Extraemos el PAYLOAD del JWT
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); // 🔹 Convertir Base64URL a Base64 estándar
+      return JSON.parse(atob(base64)); // Decodificar y parsear JSON
+  } catch (error) {
+      console.error('Error al decodificar el token:', error);
+      return null;
   }
 }

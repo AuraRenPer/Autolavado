@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { AlertController, NavController } from '@ionic/angular';
+import { AlertController, LoadingController, NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -14,8 +14,16 @@ import { AuthService } from 'src/app/services/auth.service';
 export class RegistroPage {
   registroForm: FormGroup;
   showPassword: boolean = false;
+  showErrorAlert: any;
 
-  constructor(private fb: FormBuilder, private alertCtrl: AlertController, private route: Router, private authService: AuthService, private navCtrl: NavController) {
+  constructor(
+    private fb: FormBuilder, 
+    private alertCtrl: AlertController, 
+    private route: Router, 
+    private authService: AuthService, 
+    private navCtrl: NavController, 
+    private loadingCtrl: LoadingController,
+  ) {
     this.registroForm = this.fb.group({
       fullname: ['', [Validators.required]],
       email: [
@@ -66,21 +74,55 @@ export class RegistroPage {
       return;
     }
 
-    const { email, username, password, confirmPassword } = this.registroForm.value;
+    const { fullname, email, username, password, confirmPassword, birthDate } = this.registroForm.value;
 
     if (password !== confirmPassword) {
       console.log('Las contraseñas no coinciden');
       return;
     }
 
-    const result = await this.authService.registerUser(email, username, password);
-    if (result.success) {
-      console.log('Registro exitoso');
-      this.navCtrl.navigateRoot('/login'); // Redirigir a login
-    } else {
-      console.log('Error en registro:', result.message);
+    const [nombre, ...apellidoArr] = fullname.trim().split(' ');
+    const apellido = apellidoArr.join(' ') || 'N/A';
+
+    const telefono = '0000000000';
+
+    const loading = await this.loadingCtrl.create({
+      message: 'Registrando usuario...',
+      spinner: 'crescent',
+    });
+    await loading.present();
+
+    try {
+      const result = await this.authService.registerUser(nombre, apellido, email, password, telefono);
+
+      if (result.success) {
+        console.log('Registro exitoso');
+        await loading.dismiss();
+
+        // mensaje de éxito
+        const alert = await this.alertCtrl.create({
+          header: 'Registro Exitoso',
+          message: 'Tu cuenta ha sido creada correctamente. Ahora puedes iniciar sesión.',
+          buttons: [{
+            text: 'OK',
+            handler: () => {
+              this.navCtrl.navigateRoot('/login');
+            }
+          }]
+        });
+        await alert.present();
+      } else {
+        console.log('Error en registro:', result.message);
+        await loading.dismiss();
+        this.showErrorAlert(result.message);
+      }
+    } catch (error) {
+      console.error('Error en registro:', error);
+      await loading.dismiss();
+      this.showErrorAlert('Ocurrió un error inesperado. Intenta nuevamente.');
     }
   }
+
 
 
   togglePasswordVisibility() {
@@ -91,4 +133,4 @@ export class RegistroPage {
     this.route.navigate(['/login']);
   }
 
-}
+} 

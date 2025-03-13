@@ -30,7 +30,7 @@ export class ChatDeClientesPage implements OnInit {
 
       this.currentUser = {
         uid: currentUser.uid,
-        email: currentUser.email,
+        email: currentUser.correo,
       };
       console.log('Usuario actual cargado:', this.currentUser);
 

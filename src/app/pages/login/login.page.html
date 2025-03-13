@@ -1,22 +1,30 @@
-<ion-header [translucent]="true">
-  <ion-toolbar color="primary">
-    <ion-title class="ion-text-center">Inicia Sesión</ion-title>
-  </ion-toolbar>
-</ion-header>
+<!-- <ion-header>
+</ion-header>-->
 
 <ion-content class="ion-padding">
+  
+  <!-- Splash Screen -->
+  <!-- <app-loading *ngIf="showLoading"></app-loading> -->
+    <!--  -->
+  <ion-toolbar >
+    <ion-title class="ion-text-center">Bienvenido</ion-title>
+  </ion-toolbar>
+  <div class="container">
   <ion-grid>
     <ion-row class="ion-justify-content-center">
       <ion-col size="12" size-md="6">
+
         <!-- Username -->
         <ion-item>
-          <ion-label position="floating">Username</ion-label>
+          <ion-label position="floating">Correo</ion-label>
+          <br>
           <ion-input [(ngModel)]="username" (ionInput)="validateInputs()" type="text" required></ion-input>
         </ion-item>
-
+          <br>
         <!-- Password -->
         <ion-item>
           <ion-label position="floating">Password</ion-label>
+          <br>
           <ion-input [(ngModel)]="password" (ionInput)="validateInputs()" type="password" required></ion-input>
         </ion-item>
 
@@ -27,24 +35,13 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-
-  <!-- Link para Iniciar Sesión -->
-  <p class="login-link ion-text-center">
-    ¿Aún no tienes cuenta? <a (click)="goRegister()" class="link-style">Registrate aquí</a>
-  </p>
-
-
-  <!-- MODAL -->
-  <ion-modal [isOpen]="showModal">
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>Información ingresada</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content class="ion-padding">
-      <p><strong>Username:</strong> {{ username }}</p>
-      <p><strong>Password:</strong> {{ password }}</p>
-      <ion-button expand="full" (click)="closeModal()">Cerrar</ion-button>
-    </ion-content>
-  </ion-modal>
+        <!-- Link para Iniciar Sesión -->
+        <p class="text-center mt-3">
+          ¿Aún no tienes cuenta?
+          <button color="dark" (click)="goRegister()" class="btn btn-dark rounded-pill fw-bold">
+            Registrate aquí
+          </button>
+        </p>
+      </div>
+ 
 </ion-content>
