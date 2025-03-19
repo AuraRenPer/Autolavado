@@ -4,7 +4,6 @@ import { AlertController, LoadingController, NavController } from '@ionic/angula
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 
-
 @Component({
   selector: 'app-registro',
   standalone: false,
@@ -17,35 +16,41 @@ export class RegistroPage {
   showErrorAlert: any;
 
   constructor(
-    private fb: FormBuilder, 
-    private alertCtrl: AlertController, 
-    private route: Router, 
-    private authService: AuthService, 
-    private navCtrl: NavController, 
-    private loadingCtrl: LoadingController,
+    private fb: FormBuilder,
+    private alertCtrl: AlertController,
+    private route: Router,
+    private authService: AuthService,
+    private navCtrl: NavController,
+    private loadingCtrl: LoadingController
   ) {
     this.registroForm = this.fb.group({
       fullname: ['', [Validators.required]],
-      email: [
-        '',
-        [Validators.required, Validators.email, Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)]
-      ],
-      username: [
-        '',
-        [Validators.required, Validators.pattern(/^\S*$/)]
-      ],
-      password: [
-        '',
-        [Validators.required, Validators.minLength(6), Validators.pattern(/^\S*$/)]
-      ],
-      confirmPassword: [
-        '',
-        [Validators.required, Validators.minLength(6), Validators.pattern(/^\S*$/)]
-      ],
+      email: ['', [Validators.required, Validators.email, Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)]],
+      username: ['', [Validators.required, Validators.pattern(/^\S*$/)]],
+      password: ['', [Validators.required, Validators.minLength(6), this.passwordValidator]],
+      confirmPassword: ['', [Validators.required]],
       birthDate: ['', [Validators.required]]
     }, { validators: this.passwordsMatch });
   }
 
+  /**
+   * Validación personalizada para la contraseña:
+   * Debe contener al menos 6 caracteres, un número y un carácter especial.
+   */
+  passwordValidator(control: AbstractControl): ValidationErrors | null {
+    const value: string = control.value || '';
+    const hasNumber = /\d/.test(value);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+
+    if (!hasNumber || !hasSpecialChar) {
+      return { passwordStrength: true };
+    }
+    return null;
+  }
+
+  /**
+   * Validación de coincidencia de contraseñas.
+   */
   passwordsMatch(formGroup: AbstractControl): ValidationErrors | null {
     const password = formGroup.get('password')?.value;
     const confirmPassword = formGroup.get('confirmPassword')?.value;
@@ -57,14 +62,13 @@ export class RegistroPage {
       !!this.registroForm.get('confirmPassword')?.touched;
   }
 
+  /**
+   * Transforma el nombre a mayúsculas automáticamente.
+   */
   convertToUppercase() {
     const fullNameControl = this.registroForm.get('fullname');
     if (fullNameControl) {
-      const currentValue = fullNameControl.value || '';
-      const upperValue = currentValue.toUpperCase();
-      if (currentValue !== upperValue) {
-        fullNameControl.setValue(upperValue, { emitEvent: false });
-      }
+      fullNameControl.setValue(fullNameControl.value.toUpperCase(), { emitEvent: false });
     }
   }
 
@@ -93,7 +97,7 @@ export class RegistroPage {
     await loading.present();
 
     try {
-      const result = await this.authService.registerUser(nombre, apellido, email, password, telefono);
+      const result = await this.authService.registerUser(nombre, apellido, email, password, username, telefono);
 
       if (result.success) {
         console.log('Registro exitoso');
@@ -112,9 +116,13 @@ export class RegistroPage {
         });
         await alert.present();
       } else {
-        console.log('Error en registro:', result.message);
-        await loading.dismiss();
-        this.showErrorAlert(result.message);
+        // Manejar errores específicos de correo y username
+        if (result.message.includes("correo")) {
+          this.registroForm.controls["email"].setErrors({ emailTaken: true });
+        }
+        if (result.message.includes("nombre de usuario")) {
+          this.registroForm.controls["username"].setErrors({ usernameTaken: true });
+        }
       }
     } catch (error) {
       console.error('Error en registro:', error);
@@ -124,7 +132,9 @@ export class RegistroPage {
   }
 
 
-
+  /**
+   * Cambia la visibilidad de la contraseña.
+   */
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
@@ -132,5 +142,4 @@ export class RegistroPage {
   goToLogin() {
     this.route.navigate(['/login']);
   }
-
-} 
+}

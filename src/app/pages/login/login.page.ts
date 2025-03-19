@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController, ToastController } from '@ionic/angular';
-import { AuthService } from '../../services/auth.service'; // Asegúrate de que el path sea correcto
+import { AuthService } from '../../services/auth.service'; 
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 
-//author: Pérez Ugalde Aura Renata
 @Component({
   selector: 'app-home',
   templateUrl: 'login.page.html',
@@ -11,45 +11,64 @@ import { AuthService } from '../../services/auth.service'; // Asegúrate de que 
   standalone: false,
 })
 export class LoginPage {
-  username: string = '';
-  password: string = '';
-  isValid: boolean = false;
-  showModal: boolean = false;
+  loginForm: FormGroup;
+  showPassword: boolean = false;
 
   constructor(
+    private fb: FormBuilder,
     private alertCtrl: AlertController,
     private route: Router,
     private authService: AuthService,
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController
-  ) { }
-
-  validateInputs() {
-    this.username = this.username.toLowerCase();
-    const usernameValid = this.username.trim().length > 0 && !/\s/.test(this.username);
-    const passwordValid = this.password.trim().length > 0 && !/\s/.test(this.password);
-    this.isValid = usernameValid && passwordValid;
+  ) {
+    this.loginForm = this.fb.group({
+      login: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(6), this.passwordValidator]]
+    });
   }
 
+  /**
+   * Validación personalizada para la contraseña:
+   * - Mínimo 6 caracteres
+   * - Al menos 1 número
+   * - Al menos 1 carácter especial
+   */
+  passwordValidator(control: AbstractControl): ValidationErrors | null {
+    const value: string = control.value || '';
+    const hasNumber = /\d/.test(value);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+
+    if (!hasNumber || !hasSpecialChar) {
+      return { passwordStrength: true };
+    }
+    return null;
+  }
+
+  /**
+   * Método para iniciar sesión
+   */
   async iniciarSesion() {
-    if (!this.isValid) {
-      this.showToast('Por favor, ingresa un usuario y contraseña válidos.');
+    if (this.loginForm.invalid) {
+      this.showToast('Por favor, ingresa un usuario/correo y contraseña válidos.');
       return;
     }
+  
+    const credentials = {
+      login: this.loginForm.value.login.trim(),  // ✅ Usamos "login" ya que puede ser username o correo
+      password: this.loginForm.value.password.trim()
+    };
+    console.log("📡 Enviando al backend:", credentials);
 
-    const loading = await this.loadingCtrl.create({
-      message: 'Iniciando sesión...',
-      spinner: 'circles',
-    });
-
+    const loading = await this.loadingCtrl.create({ message: 'Iniciando sesión...', spinner: 'circles' });
     await loading.present();
-
+  
     try {
-      const result = await this.authService.loginUser(this.username, this.password);
-
+      const result = await this.authService.loginUser(credentials); // 🔹 Se envía `login`
+  
       if (result.success) {
         this.showToast('Inicio de sesión exitoso.');
-        this.route.navigate(['/panel-control']); // Redirigir a la página principal
+        this.route.navigate(['/home']);
       } else {
         this.showToast(result.message);
       }
@@ -59,6 +78,14 @@ export class LoginPage {
     } finally {
       loading.dismiss();
     }
+  }
+  
+
+  /**
+   * Cambia la visibilidad de la contraseña.
+   */
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
   async showToast(message: string) {
@@ -72,13 +99,5 @@ export class LoginPage {
 
   goRegister() {
     this.route.navigate(['/registro']);
-  }
-
-  openModal() {
-    this.showModal = true;
-  }
-
-  closeModal() {
-    this.showModal = false;
   }
 }

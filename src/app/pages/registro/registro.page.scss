@@ -1,114 +1,169 @@
 /* Estilo global para centrar el contenido de la página */
 ion-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;           /* Ocupa todo el alto de la ventana */
-    padding: 1rem;
-    color: #000;
-  }
-  
-  /* Contenedor principal de la sección */
-  .container {
-    width: 100%;
-    max-width: 500px;       /* Ajusta el ancho máximo según convenga */
-    margin: 0 auto;
-    padding: 1rem;
-  }
-  
-  /* Toolbar centrado */
-  ion-toolbar {
-    --background: transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-  
-  /* Título de la toolbar */
-  ion-title {
-    font-size: 1.75rem;
-    font-weight: bold;
-  }
-  
-  /* Tarjeta de registro con estilo moderno */
-  .registro-card {
-    border-radius: 15px;
-    background: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-  }
-  
-  /* Título de la tarjeta */
-  ion-card-title {
-    font-size: 1.75rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-  }
-  
-  /* Estilos para las etiquetas de formulario */
-  .form-label {
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 0.5rem;
-    display: block;
-  }
-  
-  /* Estilos para los campos de entrada */
-  input.form-control {
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    padding: 0.75rem;
-    width: 100%;
-    margin-bottom: 0.5rem;
-    box-sizing: border-box;
-  }
-  
-  /* Mensajes de error */
-  .text-danger {
-    font-size: 0.85rem;
-    margin-top: 0.25rem;
-  }
-  
-  /* Estilo base para botones */
-  .btn {
-    display: inline-block;
-    width: 100%;
-    padding: 0.75rem;
-    font-size: 1.1rem;
-    font-weight: bold;
-    border: none;
-    border-radius: 25px;
-    transition: background 0.3s, color 0.3s;
-    cursor: pointer;
-  }
-  
-  /* Botón primario (por ejemplo, registro) */
-  .btn.btn-dark {
-    background: #000;
-    color: #fff;
-  }
-  
-  .btn.btn-dark:hover {
-    background: #FFC107; /* Amarillo */
-    color: #000;
-  }
-  
-  /* Botón para el link de iniciar sesión */
-  .btn.btn-dark.fw-bold {
-    background: #000;
-    color: #fff;
-    margin-top: 1rem;
-  }
-  
-  .btn.btn-dark.fw-bold:hover {
-    background: #FFC107;
-    color: #000;
-  }
-  
-  /* Asegura que el párrafo del link esté centrado */
-  .text-center {
-    text-align: center;
-    margin-top: 1rem;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;           /* Ocupa todo el alto de la ventana */
+  background: #ffffff !important; /* Fondo blanco */
+  padding: 1rem;
+  color: #000; /* Texto en negro */
+}
+
+/* Contenedor principal de la sección */
+.container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Toolbar centrado */
+ion-toolbar {
+  --background: white !important; /* Fondo blanco */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Título de la toolbar */
+ion-title {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: black; /* Asegura que el título sea negro */
+}
+
+/* Tarjeta de registro con estilo moderno */
+.registro-card {
+  border-radius: 15px;
+  background: #ffffff; /* Fondo blanco */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  color: black; /* Texto en negro */
+}
+
+/* Título de la tarjeta */
+ion-card-title {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: black;
+}
+
+/* Estilos para las etiquetas de formulario */
+.form-label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Estilos para los campos de entrada */
+input.form-control {
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 0.75rem;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  box-sizing: border-box;
+  background-color: white !important; /* Fondo blanco */
+  color: black !important; /* Texto negro */
+}
+
+/* Placeholder con mejor visibilidad */
+input.form-control::placeholder {
+  color: #666;
+}
+
+/* Mensajes de error */
+.text-danger {
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+/* Estilo base para botones */
+.btn {
+  display: inline-block;
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 25px;
+  // transition: background 0.3s, color 0.3s;
+  cursor: pointer;
+}
+
+/* Botón primario (por ejemplo, registro) */
+.btn.btn-dark {
+  background: #000;
+  color: #fff;
+}
+
+.btn.btn-dark:hover {
+  background: #FFC107; /* Amarillo */
+  color: #000;
+}
+
+/* Botón para el link de iniciar sesión */
+.btn.btn-dark.fw-bold {
+  background: #000;
+  color: #fff;
+  margin-top: 1rem;
+}
+
+.btn.btn-dark.fw-bold:hover {
+  background: #FFC107;
+  color: #000;
+}
+
+/* Asegura que el párrafo del link esté centrado */
+.text-center {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+
+/* Asegurar que toda la pantalla sea blanca */
+html, body, ion-app, ion-content {
+  --background: white !important; /* Aplica fondo blanco en Ionic */
+  background: white !important; /* Aplica fondo blanco en todo */
+  min-height: 100vh;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ajustar la caja del formulario para que resalte */
+.container {
+  background: white; /* Blanco para mantener uniformidad */
+  padding: 20px;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  margin: 0 auto; /* Centrado horizontal */
+}
+
+/* Asegurar que el toolbar también sea blanco */
+ion-toolbar {
+  --background: white !important;
+  background: white !important;
+  color: black !important;
+  text-align: center;
+}
+
+
+
+#eye {
+  background: white; 
+  padding: 10px; /* Reduce el padding */
+  border-radius: 15px; /* Bordes redondeados */
+  width: 60px; /* Tamaño más pequeño */
+  height: 60px; /* Mantenerlo cuadrado */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.2);
+  margin: 0 auto; /* Centrado horizontal */
+}

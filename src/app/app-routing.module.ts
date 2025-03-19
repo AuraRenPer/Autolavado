@@ -52,11 +52,6 @@ const routes: Routes = [
     canActivate: [AuthGuard], // Protegido por el guard
   },
   {
-    path: 'chat-de-pacientes',
-    loadChildren: () => import('./pages/chat-de-clientes/chat-de-clientes.module').then( m => m.ChatDeClientesPageModule),
-    canActivate: [AuthGuard], // Protegido por el guard
-  },
-  {
     path: 'chat-room/:chatId', // Ruta dinámica para el ID del chat
     loadChildren: () =>
       import('./pages/chat-room/chat-room.module').then(
