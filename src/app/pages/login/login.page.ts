@@ -68,7 +68,7 @@ export class LoginPage {
   
       if (result.success) {
         this.showToast('Inicio de sesión exitoso.');
-        this.route.navigate(['/home']);
+        this.route.navigate(['/panel-control']);
       } else {
         this.showToast(result.message);
       }
