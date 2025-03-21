@@ -15,22 +15,28 @@ export class CalendarioServiciosPage implements OnInit {
     vehiculo: '',
     tipoServicio: '',
     fechaHora: '',
-    autolavado: '',
+    autolavado: '', // Nombre del proveedor
+    precio: '', // Precio del servicio
+    duracion: '', // Duración del servicio
   };
+  
 
   serviciosProximos: Array<any> = [];
   serviciosPasados: Array<any> = [];
 
   constructor(private serviciosService: ServiciosService) { }
-
   async ngOnInit() {
     await this.cargarServicios();
   
-    const seleccionado = localStorage.getItem('autolavadoSeleccionado');
-    if (seleccionado) {
-      const lugar = JSON.parse(seleccionado);
-      this.servicio.autolavado = lugar.name;
-      localStorage.removeItem('autolavadoSeleccionado');
+    const seleccion = localStorage.getItem('seleccionAutolavado');
+    if (seleccion) {
+      const datos = JSON.parse(seleccion);
+      this.servicio.autolavado = datos.nombreProveedor;
+      this.servicio.tipoServicio = datos.nombreServicio;
+      this.servicio.precio = datos.precioServicio;
+      this.servicio.duracion = datos.duracionServicio;
+  
+      localStorage.removeItem('seleccionAutolavado'); // Limpiar después de usar
     }
   }
   
@@ -112,7 +118,9 @@ export class CalendarioServiciosPage implements OnInit {
       vehiculo: '',
       tipoServicio: '',
       fechaHora: '',
-      autolavado: ''
+      autolavado: '', // Nombre del proveedor
+      precio: '', // Precio del servicio
+      duracion: '', // Duración del servicio
     };
   }
 }

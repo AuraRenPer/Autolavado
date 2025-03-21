@@ -11,20 +11,36 @@
 </ion-header>
 
 <ion-content>
-  <!-- Contenedor para el mapa -->
-  <div id="map" style="height: 400px; margin-top: 10px;"></div>
-  <ion-list *ngIf="autolavados.length > 0">
-    <ion-list-header>
-      <ion-label>Autolavados encontrados</ion-label>
-    </ion-list-header>
-  
-    <ion-item *ngFor="let lugar of autolavados" (click)="seleccionarAutolavado(lugar)">
-      <ion-label>
-        <h2>{{ lugar.name }}</h2>
-        <p>{{ lugar.formatted_address }}</p>
-      </ion-label>
-      <ion-icon name="arrow-forward-circle-outline" slot="end"></ion-icon>
-    </ion-item>
-  </ion-list>
+  <div id="map" style="height: 300px; margin-top: 10px;"></div>
+
+  <ion-accordion-group>
+    <ion-accordion *ngFor="let proveedor of proveedores" (ionAccordionWillChange)="mostrarServicios(proveedor)">
+      <ion-item slot="header">
+        <ion-label>
+          <h2>{{ proveedor.nombreAutolavado }}</h2>
+          <p>{{ proveedor.ubicacion?.direccion }}</p>
+        </ion-label>
+      </ion-item>
+      <div class="ion-padding" slot="content">
+        <ng-container *ngIf="serviciosPorProveedor[proveedor.id]">
+          <ion-card *ngFor="let servicio of serviciosPorProveedor[proveedor.id]">
+            <ion-card-header>
+              <ion-card-title>{{ servicio.nombre }}</ion-card-title>
+              <ion-card-subtitle>{{ servicio.precio | currency:'MXN' }}</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <p>{{ servicio.descripcionProblema }}</p>
+              <p><strong>Duración:</strong> {{ servicio.duracion }}</p>
+              <ion-button expand="block" color="primary" (click)="seleccionarProveedorYServicio(proveedor, servicio)">
+                Seleccionar este servicio
+              </ion-button>
+            </ion-card-content>
+          </ion-card>
+        </ng-container>
+        <ion-spinner *ngIf="!serviciosPorProveedor[proveedor.id]"></ion-spinner>
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
   
 </ion-content>
+

@@ -11,10 +11,10 @@
 </ion-header>
 
 <ion-content fullscreen="true">
-  <!-- Formulario para agregar un servicio -->
+  <!-- Formulario para agendar un servicio -->
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Agregar Servicio</ion-card-title>
+      <ion-card-title>Agendar Servicio</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-item>
@@ -25,23 +25,40 @@
         <ion-label position="stacked">Vehículo</ion-label>
         <ion-input [(ngModel)]="servicio.vehiculo" placeholder="Modelo del vehículo"></ion-input>
       </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Tipo de Servicio</ion-label>
-        <ion-select [(ngModel)]="servicio.tipoServicio" placeholder="Seleccionar">
-          <ion-select-option value="Lavado Completo">Lavado Completo</ion-select-option>
-          <ion-select-option value="Lavado Interior">Lavado Interior</ion-select-option>
-          <ion-select-option value="Lavado Exterior">Lavado Exterior</ion-select-option>
-        </ion-select>
-      </ion-item>
+      
+      <!-- Autolavado seleccionado -->
       <ion-item>
         <ion-label position="stacked">Autolavado</ion-label>
         <ion-input [(ngModel)]="servicio.autolavado" readonly></ion-input>
-      </ion-item>     
+      </ion-item>  
+
+      <!-- Servicio seleccionado -->
+      <ion-item>
+        <ion-label position="stacked">Servicio</ion-label>
+        <ion-input [(ngModel)]="servicio.tipoServicio" readonly></ion-input>
+      </ion-item>
+
+      <!-- Precio del servicio -->
+      <ion-item>
+        <ion-label position="stacked">Precio</ion-label>
+        <ion-input [(ngModel)]="servicio.precio" readonly></ion-input>
+      </ion-item>
+
+      <!-- Duración del servicio -->
+      <ion-item>
+        <ion-label position="stacked">Duración</ion-label>
+        <ion-input [(ngModel)]="servicio.duracion" readonly></ion-input>
+      </ion-item>
+
+      <!-- Selección de fecha y hora -->
       <ion-item>
         <ion-label position="stacked">Fecha y Hora</ion-label>
         <ion-datetime [(ngModel)]="servicio.fechaHora" display-format="YYYY-MM-DD HH:mm" placeholder="Seleccionar fecha y hora"></ion-datetime>
       </ion-item>
-      <ion-button expand="block" color="primary" (click)="agregarServicio()">Agregar Servicio</ion-button>
+
+      <ion-button expand="block" color="primary" (click)="agregarServicio()">
+        Agendar Servicio
+      </ion-button>
     </ion-card-content>
   </ion-card>
 
@@ -55,8 +72,10 @@
         <ion-item *ngFor="let servicio of serviciosProximos">
           <ion-label>
             <h2>{{ servicio.cliente }} - {{ servicio.vehiculo }}</h2>
-            <p>{{ servicio.tipoServicio }}</p>
-            <p>{{ servicio.fechaHora | date: 'dd MMM yyyy, h:mm a' }}</p>
+            <p>{{ servicio.tipoServicio }} en {{ servicio.autolavado }}</p>
+            <p><strong>Fecha:</strong> {{ servicio.fechaHora | date: 'dd MMM yyyy, h:mm a' }}</p>
+            <p><strong>Precio:</strong> {{ servicio.precio | currency:'MXN' }}</p>
+            <p><strong>Duración:</strong> {{ servicio.duracion }}</p>
           </ion-label>
           <ion-button color="danger" (click)="eliminarServicio(servicio.id)">
             <ion-icon slot="icon-only" name="trash"></ion-icon>

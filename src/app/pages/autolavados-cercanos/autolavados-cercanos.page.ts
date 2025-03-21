@@ -1,4 +1,5 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, NgZone  } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { NavController } from '@ionic/angular';
 
 @Component({
@@ -8,28 +9,24 @@ import { NavController } from '@ionic/angular';
 })
 export class AutolavadosCercanosPage implements AfterViewInit {
   map: google.maps.Map | undefined;
-  markers: google.maps.marker.AdvancedMarkerElement[] = []; // Almacena los marcadores
-  autolavados: google.maps.places.PlaceResult[] = [];
+  markers: google.maps.marker.AdvancedMarkerElement[] = [];
+  proveedores: any[] = [];
+  serviciosPorProveedor: { [key: string]: any[] } = {};
 
-  constructor(private navCtrl: NavController) { }
+  constructor(private http: HttpClient, private navCtrl: NavController, private ngZone: NgZone) { }
 
   async ngAfterViewInit() {
-    // Cargar el mapa automáticamente al cargar la página
     await this.loadMap();
+    await this.cargarProveedores();
   }
-
-  
 
   async loadMap() {
     try {
-      // Obtener la ubicación del usuario
       const position = await this.getUserLocation();
-
-      // Crear el mapa centrado en la ubicación del usuario
       const mapOptions: google.maps.MapOptions = {
         center: { lat: position.lat, lng: position.lng },
-        zoom: 15,
-        mapId: '4d94bdd0d19eaa6f', // Reemplaza con tu Map ID
+        zoom: 13,
+        mapId: '4d94bdd0d19eaa6f', // tu Map ID
       };
 
       const mapElement = document.getElementById('map') as HTMLElement;
@@ -38,98 +35,103 @@ export class AutolavadosCercanosPage implements AfterViewInit {
 
       this.map = new Map(mapElement, mapOptions);
 
-      // Agregar un marcador avanzado en la ubicación del usuario
       new AdvancedMarkerElement({
         map: this.map,
         position: { lat: position.lat, lng: position.lng },
         title: 'Tu ubicación',
       });
-
-      // Buscar lugares relacionados con la salud cerca de la ubicación del usuario
-      this.searchNearbyHealthLocations(position);
     } catch (error) {
       console.error('Error al cargar el mapa:', error);
     }
   }
 
-  private async searchNearbyHealthLocations(position: { lat: number; lng: number }) {
-    if (!this.map) {
-      console.error('El mapa no está inicializado.');
-      return;
+  async cargarProveedores() {
+    try {
+      const response: any = await this.http.get('https://api-cog73kiucq-uc.a.run.app/api/proveedores/obtenerproveedores').toPromise();
+      this.proveedores = response;
+
+      this.proveedores.forEach(proveedor => this.agregarMarcador(proveedor));
+    } catch (error) {
+      console.error('Error al obtener proveedores:', error);
     }
-  
-    const service = new google.maps.places.PlacesService(this.map);
-    const request: google.maps.places.TextSearchRequest = {
-      location: position,
-      radius: 5000, // Radio de búsqueda en metros
-      query: 'autolavado',
-    };
-  
-    service.textSearch(request, (results, status) => {
-      if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-        this.autolavados = results;           // ← Aquí se guardan los resultados
-        this.addMarkers(results);             // ← Aquí se agregan al mapa
-      } else {
-        console.error('No se encontraron lugares:', status);
-      }
-    });
   }
-  
 
-  private addMarkers(places: google.maps.places.PlaceResult[]) {
-    if (!this.map) {
-      console.error('El mapa no está inicializado.');
-      return;
-    }
-
-    this.clearMarkers(); // Eliminar marcadores anteriores
+  agregarMarcador(proveedor: any) {
+    if (!this.map || !proveedor.ubicacion) return;
 
     const { AdvancedMarkerElement } = google.maps.marker;
-    places.forEach((place) => {
-      if (place.geometry && place.geometry.location) {
-        const marker = new AdvancedMarkerElement({
-          map: this.map,
-          position: place.geometry.location.toJSON(),
-          title: place.name || 'Lugar sin nombre',
-        });
 
-        this.markers.push(marker);
-      }
+    const marker = new AdvancedMarkerElement({
+      map: this.map,
+      position: {
+        lat: proveedor.ubicacion.lat,
+        lng: proveedor.ubicacion.lng,
+      },
+      title: proveedor.nombreAutolavado,
     });
+
+    this.markers.push(marker);
   }
 
-  private clearMarkers() {
-    this.markers.forEach((marker) => marker.map = null);
-    this.markers = [];
+  async mostrarServicios(proveedor: any) {
+    try {
+      const id = proveedor.id || proveedor.idProveedor;
+
+      if (this.serviciosPorProveedor[id]) {
+        console.log("✅ Servicios ya cargados para el proveedor:", id);
+        return;
+      }
+
+      console.log("🔍 Solicitando servicios para el proveedor:", id);
+
+      const url = `https://api-cog73kiucq-uc.a.run.app/api/servicios/obtenerserviciosproveedor/${id}`;
+      console.log("🌐 URL de la solicitud:", url);
+
+      const servicios = await this.http.get<any[]>(url).toPromise();
+
+      console.log("📥 Respuesta de la API:", servicios);
+
+      // Usamos NgZone para actualizar la UI de Angular
+      this.ngZone.run(() => {
+        this.serviciosPorProveedor[id] = servicios || [];
+      });
+
+    } catch (error) {
+      console.error("❌ Error al obtener servicios del proveedor:", error);
+    }
   }
 
-  // Obtener la ubicación del usuario
+
+  seleccionarProveedorYServicio(proveedor: any, servicio: any) {
+    const seleccion = {
+      idProveedor: proveedor.id,  // Guardamos el ID del proveedor
+      nombreProveedor: proveedor.nombreAutolavado, // Guardamos el nombre
+      idServicio: servicio.id,  // Guardamos el ID del servicio
+      nombreServicio: servicio.nombre, // Guardamos el nombre del servicio
+      precioServicio: servicio.precio, // Precio del servicio
+      duracionServicio: servicio.duracion, // Duración estimada
+    };
+
+    localStorage.setItem('seleccionAutolavado', JSON.stringify(seleccion));
+
+    // Navegar a la pantalla de citas
+    this.navCtrl.navigateForward('/calendario-servicios');
+  }
+
+
   private getUserLocation(): Promise<{ lat: number; lng: number }> {
     return new Promise((resolve, reject) => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-          (position) => {
-            resolve({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            });
-          },
-          () => {
-            reject('No se pudo obtener la ubicación del usuario.');
-          }
+          (position) => resolve({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          }),
+          () => reject('No se pudo obtener la ubicación del usuario.')
         );
       } else {
         reject('La geolocalización no está soportada por el navegador.');
       }
     });
-  }
-
-  seleccionarAutolavado(lugar: google.maps.places.PlaceResult) {
-    if (lugar.name) {
-      // Guardar en localStorage (u otro servicio) para pasarlo a la siguiente vista
-      localStorage.setItem('autolavadoSeleccionado', JSON.stringify(lugar));
-      // Redirigir a la página de agendamiento
-      this.navCtrl.navigateForward('/calendario-servicios');
-    }
   }
 }
