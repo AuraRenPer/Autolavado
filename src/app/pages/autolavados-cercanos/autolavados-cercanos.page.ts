@@ -1,4 +1,5 @@
 import { Component, AfterViewInit } from '@angular/core';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-autolavados-cercanos',
@@ -8,13 +9,16 @@ import { Component, AfterViewInit } from '@angular/core';
 export class AutolavadosCercanosPage implements AfterViewInit {
   map: google.maps.Map | undefined;
   markers: google.maps.marker.AdvancedMarkerElement[] = []; // Almacena los marcadores
+  autolavados: google.maps.places.PlaceResult[] = [];
 
-  constructor() {}
+  constructor(private navCtrl: NavController) { }
 
   async ngAfterViewInit() {
     // Cargar el mapa automáticamente al cargar la página
     await this.loadMap();
   }
+
+  
 
   async loadMap() {
     try {
@@ -53,22 +57,24 @@ export class AutolavadosCercanosPage implements AfterViewInit {
       console.error('El mapa no está inicializado.');
       return;
     }
-
+  
     const service = new google.maps.places.PlacesService(this.map);
     const request: google.maps.places.TextSearchRequest = {
       location: position,
       radius: 5000, // Radio de búsqueda en metros
-      query: 'autolavado', // Busca lugares relacionados con la salud
+      query: 'autolavado',
     };
-
+  
     service.textSearch(request, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-        this.addMarkers(results);
+        this.autolavados = results;           // ← Aquí se guardan los resultados
+        this.addMarkers(results);             // ← Aquí se agregan al mapa
       } else {
         console.error('No se encontraron lugares:', status);
       }
     });
   }
+  
 
   private addMarkers(places: google.maps.places.PlaceResult[]) {
     if (!this.map) {
@@ -116,5 +122,14 @@ export class AutolavadosCercanosPage implements AfterViewInit {
         reject('La geolocalización no está soportada por el navegador.');
       }
     });
+  }
+
+  seleccionarAutolavado(lugar: google.maps.places.PlaceResult) {
+    if (lugar.name) {
+      // Guardar en localStorage (u otro servicio) para pasarlo a la siguiente vista
+      localStorage.setItem('autolavadoSeleccionado', JSON.stringify(lugar));
+      // Redirigir a la página de agendamiento
+      this.navCtrl.navigateForward('/calendario-servicios');
+    }
   }
 }

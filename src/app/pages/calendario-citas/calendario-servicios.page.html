@@ -34,6 +34,10 @@
         </ion-select>
       </ion-item>
       <ion-item>
+        <ion-label position="stacked">Autolavado</ion-label>
+        <ion-input [(ngModel)]="servicio.autolavado" readonly></ion-input>
+      </ion-item>     
+      <ion-item>
         <ion-label position="stacked">Fecha y Hora</ion-label>
         <ion-datetime [(ngModel)]="servicio.fechaHora" display-format="YYYY-MM-DD HH:mm" placeholder="Seleccionar fecha y hora"></ion-datetime>
       </ion-item>

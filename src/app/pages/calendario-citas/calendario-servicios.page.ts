@@ -15,21 +15,31 @@ export class CalendarioServiciosPage implements OnInit {
     vehiculo: '',
     tipoServicio: '',
     fechaHora: '',
+    autolavado: '',
   };
 
   serviciosProximos: Array<any> = [];
   serviciosPasados: Array<any> = [];
 
-  constructor(private serviciosService: ServiciosService) {}
+  constructor(private serviciosService: ServiciosService) { }
 
   async ngOnInit() {
     await this.cargarServicios();
+  
+    const seleccionado = localStorage.getItem('autolavadoSeleccionado');
+    if (seleccionado) {
+      const lugar = JSON.parse(seleccionado);
+      this.servicio.autolavado = lugar.name;
+      localStorage.removeItem('autolavadoSeleccionado');
+    }
   }
+  
+
 
   async cargarServicios() {
     try {
       const servicios = (await this.serviciosService.obtenerServicios().toPromise()) || []; // ✅ Asegurar que `servicios` nunca sea undefined
-  
+
       const ahora = new Date();
       this.serviciosPasados = servicios.filter(
         (servicio) => servicio && servicio.fechaHora && new Date(servicio.fechaHora) < ahora
@@ -37,7 +47,7 @@ export class CalendarioServiciosPage implements OnInit {
       this.serviciosProximos = servicios.filter(
         (servicio) => servicio && servicio.fechaHora && new Date(servicio.fechaHora) >= ahora
       );
-  
+
       console.log('✅ Servicios cargados correctamente:', {
         serviciosPasados: this.serviciosPasados,
         serviciosProximos: this.serviciosProximos,
@@ -48,7 +58,7 @@ export class CalendarioServiciosPage implements OnInit {
       this.serviciosProximos = []; // ✅ En caso de error, asignar arrays vacíos para evitar más errores
     }
   }
-  
+
 
   async agregarServicio() {
     if (
@@ -102,6 +112,7 @@ export class CalendarioServiciosPage implements OnInit {
       vehiculo: '',
       tipoServicio: '',
       fechaHora: '',
+      autolavado: ''
     };
   }
 }
