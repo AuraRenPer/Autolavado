@@ -67,6 +67,8 @@ export class LoginPage {
       const result = await this.authService.loginUser(credentials); // 🔹 Se envía `login`
   
       if (result.success) {
+        const usuario = this.authService.getUsuario();
+        console.log("🧾 Usuario cargado tras login:", usuario);
         this.showToast('Inicio de sesión exitoso.');
         this.route.navigate(['/panel-control']);
       } else {

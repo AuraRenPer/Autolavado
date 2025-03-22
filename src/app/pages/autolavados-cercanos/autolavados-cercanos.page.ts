@@ -1,6 +1,8 @@
-import { Component, AfterViewInit, NgZone  } from '@angular/core';
+import { Component, AfterViewInit, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NavController } from '@ionic/angular';
+import { ServiciosService } from 'src/app/services/servicios.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-autolavados-cercanos',
@@ -12,8 +14,10 @@ export class AutolavadosCercanosPage implements AfterViewInit {
   markers: google.maps.marker.AdvancedMarkerElement[] = [];
   proveedores: any[] = [];
   serviciosPorProveedor: { [key: string]: any[] } = {};
+  cargandoServicios: { [idProveedor: string]: boolean } = {};
+  cargandoProveedores: boolean = false;
 
-  constructor(private http: HttpClient, private navCtrl: NavController, private ngZone: NgZone) { }
+  constructor(private http: HttpClient, private navCtrl: NavController, private ngZone: NgZone, private serviciosService: ServiciosService, private router: Router) { }
 
   async ngAfterViewInit() {
     await this.loadMap();
@@ -46,6 +50,9 @@ export class AutolavadosCercanosPage implements AfterViewInit {
   }
 
   async cargarProveedores() {
+    console.log("Si llegan proveedores");
+    this.cargandoProveedores = true; // 🔄 Inicio de carga
+
     try {
       const response: any = await this.http.get('https://api-cog73kiucq-uc.a.run.app/api/proveedores/obtenerproveedores').toPromise();
       this.proveedores = response;
@@ -73,34 +80,62 @@ export class AutolavadosCercanosPage implements AfterViewInit {
     this.markers.push(marker);
   }
 
-  async mostrarServicios(proveedor: any) {
-    try {
-      const id = proveedor.id || proveedor.idProveedor;
+  mostrarServicios(proveedor: any) {
+    const id = proveedor.id;
+    if (!id) return;
 
-      if (this.serviciosPorProveedor[id]) {
-        console.log("✅ Servicios ya cargados para el proveedor:", id);
-        return;
-      }
+    // Evitar volver a cargar si ya se cargó
+    if (this.serviciosPorProveedor[id]) return;
 
-      console.log("🔍 Solicitando servicios para el proveedor:", id);
+    this.cargandoServicios[id] = true;
 
-      const url = `https://api-cog73kiucq-uc.a.run.app/api/servicios/obtenerserviciosproveedor/${id}`;
-      console.log("🌐 URL de la solicitud:", url);
-
-      const servicios = await this.http.get<any[]>(url).toPromise();
-
-      console.log("📥 Respuesta de la API:", servicios);
-
-      // Usamos NgZone para actualizar la UI de Angular
-      this.ngZone.run(() => {
-        this.serviciosPorProveedor[id] = servicios || [];
-      });
-
-    } catch (error) {
-      console.error("❌ Error al obtener servicios del proveedor:", error);
-    }
+    this.serviciosService.obtenerServiciosPorProveedor(id).subscribe({
+      next: (servicios) => {
+        // Agregamos retraso artificial
+        setTimeout(() => {
+          this.serviciosPorProveedor[id] = servicios;
+          this.cargandoServicios[id] = false;
+        }, 2000); // 2 segundos
+      },
+      error: (err) => {
+        console.error("❌ Error al obtener servicios:", err);
+        this.cargandoServicios[id] = false;
+      },
+    });
   }
 
+
+  esValidoServicio(proveedorId: string): boolean {
+    return (
+      !!proveedorId &&
+      Array.isArray(this.serviciosPorProveedor[proveedorId]) &&
+      this.serviciosPorProveedor[proveedorId].length > 0
+    );
+  }
+
+  solicitarServicio(proveedor: any, servicio: any) {
+    // Datos completos para visualización
+    const datos = {
+      idProveedor: proveedor.id,
+      idServicio: servicio.id,
+      nombreProveedor: proveedor.nombreAutolavado,
+      nombreServicio: servicio.nombre,
+      precioServicio: servicio.precio,
+      duracionServicio: servicio.duracion
+    };
+  
+    localStorage.setItem('seleccionAutolavado', JSON.stringify(datos));
+    console.log("🛠️ Selección de proveedor/servicio:", datos);
+  
+    // También navega con estado por si funciona
+    this.navCtrl.navigateForward(['/calendario-citas'], {
+      state: {
+        proveedor,
+        servicio
+      }
+    });
+  }
+  
 
   seleccionarProveedorYServicio(proveedor: any, servicio: any) {
     const seleccion = {
@@ -113,9 +148,16 @@ export class AutolavadosCercanosPage implements AfterViewInit {
     };
 
     localStorage.setItem('seleccionAutolavado', JSON.stringify(seleccion));
-
+    console.log("Seleccion de autolavado y servicio", JSON.stringify(seleccion));
+    const proveedorSeleccionado = proveedor;
+    const servicioSeleccionado = servicio;
     // Navegar a la pantalla de citas
-    this.navCtrl.navigateForward('/calendario-servicios');
+    this.navCtrl.navigateForward(['/calendario-citas'], {
+      state: {
+        proveedor: proveedorSeleccionado,
+        servicio: servicioSeleccionado
+      }
+    });
   }
 
 

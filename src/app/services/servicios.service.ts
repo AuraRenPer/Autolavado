@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ServiciosService {
-  private baseUrl = 'https://us-central1-autolavado-38624.cloudfunctions.net'; // ✅ Base URL de Cloud Functions
+  private baseUrl = 'https://api-cog73kiucq-uc.a.run.app/api'; // ✅ Base URL de Cloud Functions
 
   constructor(private http: HttpClient) {}
 
@@ -19,7 +19,7 @@ export class ServiciosService {
     estado: string;
   }) {
     try {
-      const response = await this.http.post(`${this.baseUrl}/crearServicio`, servicio).toPromise();
+      const response = await this.http.post(`${this.baseUrl}/servicios/crearservicio`, servicio).toPromise();
       console.log("✅ Servicio enviado al backend correctamente:", response);
     } catch (error) {
       console.error("❌ Error al enviar servicio al backend:", error);
@@ -28,8 +28,21 @@ export class ServiciosService {
   
   /** ✅ Obtener todos los servicios (GET) */
   obtenerServicios(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/obtenerServicios`);
+    return this.http.get<any[]>(`${this.baseUrl}/servicios/obtenerservicios`);
   }
+
+  /** ✅ Obtener servicios por ID de proveedor */
+  obtenerServiciosPorProveedor(idProveedor: string): Observable<any[]> {
+    if (!idProveedor) {
+      console.error("❌ ID de proveedor no válido en el servicio");
+      return of([]); // Devuelve observable vacío para evitar error 500
+    }
+  
+    const url = `${this.baseUrl}/servicios/obtenerserviciosproveedor/${idProveedor}`;
+    return this.http.get<any[]>(url);
+  }
+  
+
 
   /** ✅ Actualizar un servicio (PUT) */
   actualizarServicio(
@@ -42,7 +55,7 @@ export class ServiciosService {
       estado: string;
     }
   ) {
-    return this.http.put(`${this.baseUrl}/actualizarServicio/${id}`, nuevoServicio).subscribe({
+    return this.http.put(`${this.baseUrl}/servicios/actualizarServicio/${id}`, nuevoServicio).subscribe({
       next: (response) => console.log('✅ Servicio actualizado con éxito:', response),
       error: (error) => console.error('❌ Error al actualizar servicio:', error),
     });
@@ -50,9 +63,21 @@ export class ServiciosService {
 
   /** ✅ Eliminar un servicio (DELETE) */
   eliminarServicio(id: string) {
-    return this.http.delete(`${this.baseUrl}/eliminarServicio/${id}`).subscribe({
+    return this.http.delete(`${this.baseUrl}/servicios/eliminarServicio/${id}`).subscribe({
       next: (response) => console.log('✅ Servicio eliminado con éxito:', response),
       error: (error) => console.error('❌ Error al eliminar servicio:', error),
     });
   }
+
+  guardarVehiculo(vehiculoData: any): Promise<any> {
+    const url = `${this.baseUrl}/vehiculos/crearvehiculo`;
+    return this.http.post<any>(url, vehiculoData).toPromise();
+  }
+  
+  agendarCita(citaData: any): Promise<any> {
+    const url = `${this.baseUrl}/citas/crearcita`;
+    return this.http.post<any>(url, citaData).toPromise();
+  }
+  
+  
 }

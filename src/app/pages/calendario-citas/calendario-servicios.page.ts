@@ -1,126 +1,146 @@
-import { Component, OnInit } from '@angular/core';
-import { ServiciosService } from '../../services/servicios.service';
-import { ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
+import { ServiciosService } from 'src/app/services/servicios.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-calendario-servicios',
   templateUrl: './calendario-servicios.page.html',
   styleUrls: ['./calendario-servicios.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CalendarioServiciosPage implements OnInit {
-  // Datos del nuevo servicio a agregar
-  servicio = {
-    cliente: '',
-    vehiculo: '',
-    tipoServicio: '',
-    fechaHora: '',
-    autolavado: '', // Nombre del proveedor
-    precio: '', // Precio del servicio
-    duracion: '', // Duración del servicio
-  };
+export class CalendarioServiciosPage {
+  mostrarVehiculo: boolean = false;
+  serviciosProximos: any[] = []; // si vas a mostrar servicios futuros
+  usuario: any;
+  proveedorSeleccionado: any;
+  servicioSeleccionado: any;
+  servicio: any = {}; // Aquí se guarda la información del vehículo y el servicio
+  idVehiculo: string = '';
+
+  constructor(
+    private serviciosService: ServiciosService,
+    private authService: AuthService,
+    private router: Router
+  ) { }
+
+  ionViewWillEnter() {
+    this.usuario = this.authService.getUsuario();
+    console.log('👤 Usuario cargado:', this.usuario);
   
-
-  serviciosProximos: Array<any> = [];
-  serviciosPasados: Array<any> = [];
-
-  constructor(private serviciosService: ServiciosService) { }
-  async ngOnInit() {
-    await this.cargarServicios();
+    const navigation = this.router.getCurrentNavigation();
+    const state = navigation?.extras?.state;
   
-    const seleccion = localStorage.getItem('seleccionAutolavado');
-    if (seleccion) {
-      const datos = JSON.parse(seleccion);
-      this.servicio.autolavado = datos.nombreProveedor;
-      this.servicio.tipoServicio = datos.nombreServicio;
-      this.servicio.precio = datos.precioServicio;
-      this.servicio.duracion = datos.duracionServicio;
+    if (state) {
+      this.proveedorSeleccionado = state['proveedor'];
+      const servicio = state['servicio'];
   
-      localStorage.removeItem('seleccionAutolavado'); // Limpiar después de usar
-    }
-  }
+      console.log('📦 Proveedor recibido (por navegación):', this.proveedorSeleccionado);
+      console.log('📦 Servicio recibido (por navegación):', servicio);
   
-
-
-  async cargarServicios() {
-    try {
-      const servicios = (await this.serviciosService.obtenerServicios().toPromise()) || []; // ✅ Asegurar que `servicios` nunca sea undefined
-
-      const ahora = new Date();
-      this.serviciosPasados = servicios.filter(
-        (servicio) => servicio && servicio.fechaHora && new Date(servicio.fechaHora) < ahora
-      );
-      this.serviciosProximos = servicios.filter(
-        (servicio) => servicio && servicio.fechaHora && new Date(servicio.fechaHora) >= ahora
-      );
-
-      console.log('✅ Servicios cargados correctamente:', {
-        serviciosPasados: this.serviciosPasados,
-        serviciosProximos: this.serviciosProximos,
-      });
-    } catch (error) {
-      console.error('❌ Error al obtener servicios:', error);
-      this.serviciosPasados = [];
-      this.serviciosProximos = []; // ✅ En caso de error, asignar arrays vacíos para evitar más errores
-    }
-  }
-
-
-  async agregarServicio() {
-    if (
-      this.servicio.cliente.trim() &&
-      this.servicio.vehiculo.trim() &&
-      this.servicio.tipoServicio.trim() &&
-      this.servicio.fechaHora.trim()
-    ) {
-      const fecha = new Date(this.servicio.fechaHora);
-
-      if (fecha && !isNaN(fecha.getTime())) {
-        const nuevoServicio = {
-          ...this.servicio,
-          fechaHora: fecha.toISOString(), // Convertir a formato ISO
-          estado: 'pendiente',
-        };
-
-        try {
-          await this.serviciosService.agregarServicio(nuevoServicio);
-          console.log('✅ Servicio agregado:', nuevoServicio);
-          alert('Servicio agregado exitosamente.');
-          this.limpiarFormulario();
-          await this.cargarServicios(); // Recargar servicios
-        } catch (error) {
-          console.error('❌ Error al agregar servicio:', error);
-        }
-      } else {
-        alert('Por favor, selecciona una fecha y hora válida.');
-      }
+      this.servicio.tipoServicio = servicio.nombre;
+      this.servicio.precio = servicio.precio;
+      this.servicio.duracion = servicio.duracion;
+      this.servicio.id = servicio.id;
+      this.servicio.autolavado = this.proveedorSeleccionado.nombreAutolavado;
+  
     } else {
-      alert('Todos los campos son obligatorios.');
-    }
-  }
-
-  async eliminarServicio(id: string) {
-    if (confirm('¿Estás seguro de que deseas eliminar este servicio?')) {
-      try {
-        await this.serviciosService.eliminarServicio(id);
-        console.log('✅ Servicio eliminado:', id);
-        alert('Servicio eliminado exitosamente.');
-        await this.cargarServicios(); // Recargar servicios
-      } catch (error) {
-        console.error('❌ Error al eliminar servicio:', error);
+      // 🔁 Plan B: leer de localStorage
+      const datosGuardados = JSON.parse(localStorage.getItem('seleccionAutolavado') || '{}');
+  
+      if (datosGuardados?.idProveedor && datosGuardados?.idServicio) {
+        this.servicio.tipoServicio = datosGuardados.nombreServicio;
+        this.servicio.precio = datosGuardados.precioServicio;
+        this.servicio.duracion = datosGuardados.duracionServicio;
+        this.servicio.id = datosGuardados.idServicio;
+        this.servicio.autolavado = datosGuardados.nombreProveedor;
+  
+        // 🔸 Crea manualmente proveedorSeleccionado si no lo tienes completo
+        this.proveedorSeleccionado = { id: datosGuardados.idProveedor, nombreAutolavado: datosGuardados.nombreProveedor };
+  
+        console.log('📦 Proveedor desde localStorage:', this.proveedorSeleccionado);
+      } else {
+        console.warn("⚠️ No se encontraron datos para mostrar.");
       }
     }
   }
+  
+  
+
+  /**
+   * Paso 1: Guardar vehículo y luego agendar cita
+   */
+  async guardarVehiculoYAgendarCita() {
+    if (!this.usuario || !this.usuario.id) {
+      console.error("⚠️ Usuario no definido.");
+      return;
+    }
+    
+    const vehiculoData = {
+      idUsuario: this.usuario.id,
+      marca: this.servicio.marca,
+      modelo: this.servicio.modelo,
+      year: this.servicio.year,
+      placa: this.servicio.placa,
+      color: this.servicio.color,
+    };
+  
+    try {
+      const res = await this.serviciosService.guardarVehiculo(vehiculoData);
+      console.log('✅ Respuesta del guardado de vehículo:', res);
+      
+      this.idVehiculo = res.id;
+      
+      if (this.idVehiculo) {
+        console.log('✅ Vehículo guardado con ID:', this.idVehiculo);
+        await this.agendarCita();
+      } else {
+        console.error("❌ No se pudo obtener el ID del vehículo.");
+      }
+    } catch (error) {
+      console.error('❌ Error al guardar vehículo:', error);
+    }
+  }
+  
+  /**
+   * Paso 2: Agendar cita usando el ID del vehículo
+   */
+  async agendarCita() {
+    const fechaHora = this.servicio.fechaHora;
+
+    const nuevaCita = {
+      idUsuario: this.usuario.id,
+      idProveedor: this.proveedorSeleccionado.id,
+      idServicio: this.servicio.id || 'servicioPorDefinir',
+      idVehiculo: this.idVehiculo,
+      fechaCita: fechaHora,
+      horaCita: fechaHora, // si separas hora en otro campo, cámbialo
+      estatus: 'Pendiente',
+    };
+
+    try {
+      const res = await this.serviciosService.agendarCita(nuevaCita);
+      console.log('✅ Cita agendada:', res);
+    } catch (error) {
+      console.error('❌ Error al agendar cita:', error);
+    }
+  }
+
 
   limpiarFormulario() {
     this.servicio = {
+      id: '',
       cliente: '',
       vehiculo: '',
       tipoServicio: '',
       fechaHora: '',
-      autolavado: '', // Nombre del proveedor
-      precio: '', // Precio del servicio
-      duracion: '', // Duración del servicio
+      autolavado: '',
+      precio: '',
+      duracion: '',
+      marca: '',
+      modelo: '',
+      year: '',
+      placa: '',
+      color: ''
     };
   }
 }

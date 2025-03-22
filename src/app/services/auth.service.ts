@@ -52,7 +52,8 @@ async loginUser(credentials: { login: string, password: string }) {
       // 🔹 Guardar información adicional del usuario
       localStorage.setItem("userRole", response.usuario.rol);
       localStorage.setItem("userPermissions", JSON.stringify(response.usuario.permisos || []));
-
+      localStorage.setItem("usuario", JSON.stringify(response.usuario));
+      console.log("SI ES O NOOOOO USUARIOOOOOOOOOOO", JSON.stringify(response.usuario));
       return { success: true };
     } else {
       console.error("❌ No se recibió un token en la respuesta.");
@@ -121,6 +122,14 @@ hasPermission(permission: string): boolean {
 getUserRole(): string {
   return localStorage.getItem("userRole") || 'user';
 }
+
+getUsuario(): any {
+  const userData = localStorage.getItem('usuario');
+  console.log("usuario datos", userData);
+  return userData ? JSON.parse(userData) : null;
+}
+
+
 }
 
 /**
@@ -136,3 +145,4 @@ try {
   return null;
 }
 }
+

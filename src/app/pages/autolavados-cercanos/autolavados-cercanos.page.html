@@ -14,33 +14,48 @@
   <div id="map" style="height: 300px; margin-top: 10px;"></div>
 
   <ion-accordion-group>
-    <ion-accordion *ngFor="let proveedor of proveedores" (ionAccordionWillChange)="mostrarServicios(proveedor)">
-      <ion-item slot="header">
+    <ion-accordion *ngFor="let proveedor of proveedores" [value]="proveedor.id">
+      <ion-item slot="header" (click)="mostrarServicios(proveedor)">
         <ion-label>
           <h2>{{ proveedor.nombreAutolavado }}</h2>
           <p>{{ proveedor.ubicacion?.direccion }}</p>
         </ion-label>
       </ion-item>
-      <div class="ion-padding" slot="content">
-        <ng-container *ngIf="serviciosPorProveedor[proveedor.id]">
-          <ion-card *ngFor="let servicio of serviciosPorProveedor[proveedor.id]">
-            <ion-card-header>
-              <ion-card-title>{{ servicio.nombre }}</ion-card-title>
-              <ion-card-subtitle>{{ servicio.precio | currency:'MXN' }}</ion-card-subtitle>
-            </ion-card-header>
-            <ion-card-content>
-              <p>{{ servicio.descripcionProblema }}</p>
-              <p><strong>Duración:</strong> {{ servicio.duracion }}</p>
-              <ion-button expand="block" color="primary" (click)="seleccionarProveedorYServicio(proveedor, servicio)">
-                Seleccionar este servicio
+  
+      <!-- 🔄 Spinner dentro del slot="content" -->
+      <ion-item *ngIf="cargandoServicios[proveedor.id]" slot="content">
+        <ion-label class="ion-text-center">
+          <ion-spinner name="crescent" color="primary"></ion-spinner>
+          <p>Cargando servicios...</p>
+        </ion-label>
+      </ion-item>
+  
+      <!-- ✅ Lista de servicios -->
+      <ion-item *ngIf="!cargandoServicios[proveedor.id] && esValidoServicio(proveedor.id)" slot="content">
+        <ion-label>
+          <ion-list>
+            <ion-item *ngFor="let servicio of serviciosPorProveedor[proveedor.id]" (click)="seleccionarProveedorYServicio(proveedor, servicio)">
+              <ion-label>
+                <h2>{{ servicio.nombre }}</h2>
+                <p>{{ servicio.descripcion }}</p>
+                <p><strong>Duración:</strong> {{ servicio.duracion }}</p>
+                <p><strong>Precio:</strong> ${{ servicio.precio }}</p>
+              </ion-label>
+              <ion-button fill="outline" color="primary" slot="end" (click)="solicitarServicio(proveedor, servicio)">
+                Solicitar Servicio
               </ion-button>
-            </ion-card-content>
-          </ion-card>
-        </ng-container>
-        <ion-spinner *ngIf="!serviciosPorProveedor[proveedor.id]"></ion-spinner>
-      </div>
+            </ion-item>
+          </ion-list>
+        </ion-label>
+      </ion-item>
+  
+      <!-- ❌ Sin servicios -->
+      <ion-item *ngIf="!cargandoServicios[proveedor.id] && serviciosPorProveedor[proveedor.id]?.length === 0" slot="content">
+        <ion-label class="ion-text-center">
+          <ion-text color="medium">No hay servicios disponibles para este proveedor.</ion-text>
+        </ion-label>
+      </ion-item>
     </ion-accordion>
   </ion-accordion-group>
-  
-</ion-content>
 
+</ion-content>
