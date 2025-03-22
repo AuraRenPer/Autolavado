@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ServiciosService } from 'src/app/services/servicios.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
+import { AlertController, NavController } from '@ionic/angular'; 
 
 @Component({
   selector: 'app-calendario-servicios',
@@ -10,16 +11,18 @@ import { Router } from '@angular/router';
 })
 export class CalendarioServiciosPage {
   mostrarVehiculo: boolean = false;
-  serviciosProximos: any[] = []; // si vas a mostrar servicios futuros
+  serviciosProximos: any[] = []; 
   usuario: any;
   proveedorSeleccionado: any;
   servicioSeleccionado: any;
-  servicio: any = {}; // Aquí se guarda la información del vehículo y el servicio
+  servicio: any = {}; 
   idVehiculo: string = '';
 
   constructor(
+    private alertController: AlertController,
     private serviciosService: ServiciosService,
     private authService: AuthService,
+    private navCtrl: NavController,
     private router: Router
   ) { }
 
@@ -44,7 +47,6 @@ export class CalendarioServiciosPage {
       this.servicio.autolavado = this.proveedorSeleccionado.nombreAutolavado;
   
     } else {
-      // 🔁 Plan B: leer de localStorage
       const datosGuardados = JSON.parse(localStorage.getItem('seleccionAutolavado') || '{}');
   
       if (datosGuardados?.idProveedor && datosGuardados?.idServicio) {
@@ -54,7 +56,6 @@ export class CalendarioServiciosPage {
         this.servicio.id = datosGuardados.idServicio;
         this.servicio.autolavado = datosGuardados.nombreProveedor;
   
-        // 🔸 Crea manualmente proveedorSeleccionado si no lo tienes completo
         this.proveedorSeleccionado = { id: datosGuardados.idProveedor, nombreAutolavado: datosGuardados.nombreProveedor };
   
         console.log('📦 Proveedor desde localStorage:', this.proveedorSeleccionado);
@@ -120,10 +121,51 @@ export class CalendarioServiciosPage {
     try {
       const res = await this.serviciosService.agendarCita(nuevaCita);
       console.log('✅ Cita agendada:', res);
+      await this.mostrarMensajeCitaAgendada(); // mostrar el mensaje
+
     } catch (error) {
       console.error('❌ Error al agendar cita:', error);
     }
   }
+
+  async confirmarCancelar() {
+    const alert = await this.alertController.create({
+      header: '¿Cancelar cita?',
+      message: 'Si regresas al menú principal, perderás los datos ingresados. ¿Deseas continuar?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel'
+        },
+        {
+          text: 'Sí',
+          handler: () => {
+            this.navCtrl.navigateBack('/panel-control');
+          }
+        }
+      ]
+    });
+  
+    await alert.present();
+  }
+
+  async mostrarMensajeCitaAgendada() {
+    const alert = await this.alertController.create({
+      header: '✅ Cita agendada',
+      message: 'Tu cita fue registrada exitosamente.',
+      buttons: [
+        {
+          text: 'OK',
+          handler: () => {
+            this.navCtrl.navigateRoot('/panel-control'); // vuelve al panel
+          }
+        }
+      ]
+    });
+  
+    await alert.present();
+  }
+  
 
 
   limpiarFormulario() {

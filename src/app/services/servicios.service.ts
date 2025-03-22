@@ -31,6 +31,16 @@ export class ServiciosService {
     return this.http.get<any[]>(`${this.baseUrl}/servicios/obtenerservicios`);
   }
 
+/** Obtener citas por id de usuario */
+obtenerCitasPorUsuario(idUsuario: string): Observable<any[]> {
+  if (!idUsuario) {
+    console.error("❌ ID de usuario no válido en el servicio");
+    return of([]); // Devuelve observable vacío para evitar error 500
+  }
+
+  const url = `${this.baseUrl}/citas/obtenercitausuario/${idUsuario}`;
+  return this.http.get<any[]>(url);
+}
   /** ✅ Obtener servicios por ID de proveedor */
   obtenerServiciosPorProveedor(idProveedor: string): Observable<any[]> {
     if (!idProveedor) {
@@ -41,6 +51,12 @@ export class ServiciosService {
     const url = `${this.baseUrl}/servicios/obtenerserviciosproveedor/${idProveedor}`;
     return this.http.get<any[]>(url);
   }
+
+  // Obtener todos los proveedores
+obtenerTodosLosProveedores(): Observable<any[]> {
+  const url = `${this.baseUrl}/proveedores/obtenerproveedores`;
+  return this.http.get<any[]>(url);
+}
   
 
 

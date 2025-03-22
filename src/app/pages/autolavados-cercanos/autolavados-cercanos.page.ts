@@ -127,7 +127,6 @@ export class AutolavadosCercanosPage implements AfterViewInit {
     localStorage.setItem('seleccionAutolavado', JSON.stringify(datos));
     console.log("🛠️ Selección de proveedor/servicio:", datos);
   
-    // También navega con estado por si funciona
     this.navCtrl.navigateForward(['/calendario-citas'], {
       state: {
         proveedor,

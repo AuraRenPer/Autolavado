@@ -125,7 +125,7 @@ getUserRole(): string {
 
 getUsuario(): any {
   const userData = localStorage.getItem('usuario');
-  console.log("usuario datos", userData);
+  console.log("🧠 getUsuario():", userData);
   return userData ? JSON.parse(userData) : null;
 }
 

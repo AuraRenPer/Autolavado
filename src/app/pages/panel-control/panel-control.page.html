@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-button (click)="cerrarSesion()">
         <ion-icon slot="start" name="log-out"></ion-icon>
@@ -10,86 +10,63 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen="true" scroll-y="true">
-  <ion-list>
-    <ion-list-header>
-      <ion-label>Tus próximas citas</ion-label>
-    </ion-list-header>
+<ion-content fullscreen="true" scroll-y="true" class="ion-padding">
 
-    <ng-container *ngIf="serviciosProximas.length > 0; else noCitas">
-      <ion-item *ngFor="let cita of serviciosProximas">
-        <ion-thumbnail slot="start" *ngIf="cita.imagenUrl">
-          <img [src]="cita.imagenUrl" alt="Imagen de la cita" />
-        </ion-thumbnail>
-        <ion-label>
-          <h2>{{ cita.fechaHora | date: 'dd MMM yyyy, h:mm a' }}</h2>
-        </ion-label>
-      </ion-item>
-    </ng-container>
+  <!-- Lista de próximas citas -->
+  <ion-text color="primary">
+    <h2><strong>Tus próximas citas</strong></h2>
+  </ion-text>
 
-    <ng-template #noCitas>
-      <ion-item>
-        <ion-label>No hay citas próximas</ion-label>
-      </ion-item>
-    </ng-template>
-  </ion-list>
+  <ng-container *ngIf="serviciosProximas.length > 0; else noCitas">
+    <ion-card *ngFor="let cita of serviciosProximas">
+      <ion-card-header>
+        <ion-card-title>{{ cita.nombreServicio }}</ion-card-title>
+        <ion-card-subtitle>{{ cita.nombreAutolavado }}</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <p><ion-icon name="calendar-outline"></ion-icon> {{ cita.fechaCita | date: 'fullDate' }}</p>
+        <p><ion-icon name="time-outline"></ion-icon> {{ cita.fechaCita | date: 'shortTime' }}</p>
+        <p><ion-icon name="information-circle-outline"></ion-icon> Estado: <strong>{{ cita.estatus }}</strong></p>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
 
-  <!-- Contenedor para los botones -->
+  <ng-template #noCitas>
+    <ion-card color="light">
+      <ion-card-content>
+        <ion-text color="medium">
+          No hay citas próximas registradas.
+        </ion-text>
+      </ion-card-content>
+    </ion-card>
+  </ng-template>
+
+  <!-- Accesos rápidos -->
+  <ion-text color="primary">
+    <h2><strong>Accesos rápidos</strong></h2>
+  </ion-text>
 
   <ion-grid>
-    <ion-row class="button-row">
-   <!-- Calendario
-      <ion-col size="6" size-md="auto">
-        <ion-button class="square-button" [routerLink]="['/calendario-citas']">
-          <ion-icon slot="start" name="calendar" class="large-icon"></ion-icon>
-          <ion-label>Calendario</ion-label>
-        </ion-button>
-      </ion-col> -->
-  <!-- Boton del perfil desacticado-->
-
-      <ion-col size="6" size-md="auto">
-        <ion-button class="square-button" [routerLink]="['/perfil-paciente']">
-          <ion-icon slot="start" name="person" class="large-icon"></ion-icon>
-          <ion-label>Ir al Perfil</ion-label>
-        </ion-button>
-      </ion-col> 
-
-      <!-- BOTON DE CLIENTES
-      <ion-col size="6" size-md="auto">
-        <ion-button class="square-button" [routerLink]="['/clientes']">
-          <ion-icon slot="start" name="person" class="large-icon"></ion-icon>
-          <ion-label>Clientes</ion-label>
-        </ion-button>
-      </ion-col>-->
-
-      <ion-col size="6" size-md="auto">
-        <ion-button class="square-button" [routerLink]="['/consultas-pasadas']">
-          <ion-icon slot="start" name="time" class="large-icon"></ion-icon>
-          <ion-label>Servicios Anteriores</ion-label>
+    <ion-row class="ion-justify-content-center ion-align-items-center">
+      <ion-col size="6" size-md="4" size-lg="3">
+        <ion-button expand="block" shape="round" fill="outline" [routerLink]="['/perfil-paciente']">
+          <ion-icon name="person" slot="start"></ion-icon>
+          Perfil
         </ion-button>
       </ion-col>
-
-      <ion-col size="6" size-md="auto">
-        <ion-button class="square-button" [routerLink]="['/autolavados-cercanos']">
-          <ion-icon slot="start" name="navigate" class="large-icon"></ion-icon>
-          <ion-label>Autolavados Cercanos</ion-label>
+      <ion-col size="6" size-md="4" size-lg="3">
+        <ion-button expand="block" shape="round" fill="outline" [routerLink]="['/consultas-pasadas']">
+          <ion-icon name="time" slot="start"></ion-icon>
+          Servicios Anteriores
         </ion-button>
       </ion-col>
-
-      <!-- <ion-col size="6" size-md="auto">
-        <ion-button class="square-button" [routerLink]="['/grabar-consulta']">
-          <ion-icon slot="start" name="camera" class="large-icon"></ion-icon>
-          <ion-label>Grabar servicio</ion-label>
+      <ion-col size="6" size-md="4" size-lg="3">
+        <ion-button expand="block" shape="round" fill="outline" [routerLink]="['/autolavados-cercanos']">
+          <ion-icon name="navigate" slot="start"></ion-icon>
+          Autolavados
         </ion-button>
-      </ion-col>-->
-
-      <!--<ion-col size="6" size-md="auto">
-        <ion-button class="square-button" [routerLink]="['/chat-de-pacientes']">
-          <ion-icon slot="start" name="chatbubbles" class="large-icon"></ion-icon>
-          <ion-label>Chat de clientes</ion-label>
-        </ion-button>
-      </ion-col>-->
-
+      </ion-col>
     </ion-row>
   </ion-grid>
+
 </ion-content>

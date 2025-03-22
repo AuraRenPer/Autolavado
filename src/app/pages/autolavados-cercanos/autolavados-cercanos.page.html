@@ -30,7 +30,7 @@
         </ion-label>
       </ion-item>
   
-      <!-- ✅ Lista de servicios -->
+      <!-- Lista de servicios -->
       <ion-item *ngIf="!cargandoServicios[proveedor.id] && esValidoServicio(proveedor.id)" slot="content">
         <ion-label>
           <ion-list>
@@ -49,7 +49,7 @@
         </ion-label>
       </ion-item>
   
-      <!-- ❌ Sin servicios -->
+      <!-- Sin servicios -->
       <ion-item *ngIf="!cargandoServicios[proveedor.id] && serviciosPorProveedor[proveedor.id]?.length === 0" slot="content">
         <ion-label class="ion-text-center">
           <ion-text color="medium">No hay servicios disponibles para este proveedor.</ion-text>

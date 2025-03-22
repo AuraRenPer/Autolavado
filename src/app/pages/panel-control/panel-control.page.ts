@@ -17,43 +17,89 @@ declare var window: Window;
   styleUrls: ['./panel-control.page.scss'],
 })
 export class PanelControlPage implements OnInit {
-  serviciosProximas: Array<{ id: string; fechaHora: Date; imagenUrl?: string }> = [];
-  private youtubeApiKey: string = environment.youtubeApiKey; // Asignar la clave de API desde el entorno
+  serviciosProximas: {
+    id: string;
+    fechaCita: Date;
+    horaCita: string;
+    nombreServicio: string;
+    nombreAutolavado: string;
+    estatus: string;
+    imagenUrl?: string;
+  }[] = [];
+
+
+  obtenerCitasPorUsuario: Array<{ idUsuario: string }> = [];
+  usuario: any;
+
 
   constructor(
     private serviciosService: ServiciosService,
     private authService: AuthService, // Inyectar el servicio de autenticación
     private router: Router // Inyectar el router para redirigir
-  ) {}
+  ) { }
 
   ngOnInit() {
     console.log('ngOnInit: Inicializando la página PanelControl');
+    this.usuario = this.authService.getUsuario(); // ← Agrega esto
+    console.log("👤 Usuario cargado:", this.usuario);
+
     this.cargarCitasProximas();
     this.cargarYouTubeAPI();
   }
 
-  cargarCitasProximas() {
+
+  async cargarCitasProximas() {
+    console.log("ID USUARIO", this.usuario?.id);
+    if (!this.usuario || !this.usuario.id) {
+      console.warn("⚠ No se puede cargar citas porque el usuario no está disponible.");
+      return;
+    }
+
+    const citas = await this.serviciosService.obtenerCitasPorUsuario(this.usuario.id).toPromise();
     const ahora = new Date();
-    console.log('cargarCitasProximas: Obteniendo citas próximas.');
-  
-    this.serviciosService.obtenerServicios().subscribe((servicios) => {
-      if (!servicios) {
-        console.warn('⚠ No se encontraron citas.');
-        this.serviciosProximas = [];
-        return;
-      }
-  
-      this.serviciosProximas = servicios
-        .map((cita) => ({
-          ...cita,
-          fechaHora: new Date(cita.fechaHora),
-        }))
-        .filter((cita) => cita.fechaHora > ahora); // Filtrar solo las citas futuras
-  
-      console.log('✅ Citas próximas actualizadas:', this.serviciosProximas);
-    });
+
+    console.log("CITAS DE USUARIO", citas);
+
+    if (!citas || citas.length === 0) {
+      this.serviciosProximas = [];
+      return;
+    }
+
+    const proveedores = await this.serviciosService.obtenerTodosLosProveedores().toPromise();
+
+    const citasEnriquecidas = await Promise.all(
+      citas.map(async (cita) => {
+        const citaEnriquecida: any = {
+          id: cita.id,
+          fechaCita: new Date(cita.fechaCita),
+          horaCita: cita.horaCita,
+          estatus: cita.estado || "Sin estado"
+        };
+
+        // 🔍 Buscar el proveedor
+        const proveedorEncontrado = (proveedores ?? []).find(p => p.id === cita.idProveedor);
+        citaEnriquecida.nombreAutolavado = proveedorEncontrado?.nombreAutolavado || "Autolavado desconocido";
+
+        // 🔍 Buscar servicio por proveedor
+        try {
+          const servicios = await this.serviciosService.obtenerServiciosPorProveedor(cita.idProveedor).toPromise();
+          const servicioEncontrado = (servicios ?? []).find(s => s.id === cita.idServicio);
+          citaEnriquecida.nombreServicio = servicioEncontrado?.nombre || "Servicio desconocido";
+        } catch (error) {
+          console.warn("❌ Error al obtener servicios del proveedor:", error);
+          citaEnriquecida.nombreServicio = "Servicio no disponible";
+        }
+
+        return citaEnriquecida;
+      })
+    );
+    console.log("cita enrequicida", citasEnriquecidas);
+
+    // 🎯 Filtrar solo futuras
+    this.serviciosProximas = citasEnriquecidas.filter(c => c.fechaCita > ahora);
+    console.log("✅ Citas enriquecidas:", this.serviciosProximas);
   }
-  
+
 
   async cerrarSesion() {
     try {
@@ -63,7 +109,7 @@ export class PanelControlPage implements OnInit {
       if (window.YT) {
         console.log('cerrarSesion: Eliminando instancia de la API de YouTube.');
         window.YT = undefined; // Reinicia la referencia a la API
-        window.onYouTubeIframeAPIReady = () => {}; // Limpia el callback asignando una función vacía
+        window.onYouTubeIframeAPIReady = () => { }; // Limpia el callback asignando una función vacía
       }
 
       // Lógica de cierre de sesión
@@ -116,7 +162,7 @@ export class PanelControlPage implements OnInit {
       new window.YT.Player('youtube-player', {
         height: '315',
         width: '560',
-        videoId: 'pr6cpARvnKs', 
+        videoId: 'pr6cpARvnKs',
         events: {
           onReady: this.onPlayerReady,
           onError: this.onPlayerError,
@@ -135,3 +181,17 @@ export class PanelControlPage implements OnInit {
     console.error('onPlayerError: Error en el reproductor de YouTube:', event);
   }
 }
+
+interface ServicioEnProveedor {
+  id: string;
+  nombre: string;
+  imagen?: string;
+}
+
+interface ProveedorConServicios {
+  id: string;
+  nombreAutolavado: string;
+  servicios: ServicioEnProveedor[];
+}
+
+let mapaServiciosPorProveedor: ProveedorConServicios[] = [];
