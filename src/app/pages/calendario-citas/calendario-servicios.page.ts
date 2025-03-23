@@ -121,10 +121,26 @@ export class CalendarioServiciosPage {
     try {
       const res = await this.serviciosService.agendarCita(nuevaCita);
       console.log('✅ Cita agendada:', res);
+
+      // Si la respuesta tiene el id de la cita
+      if (res && res.idCita) {
+        const nuevoHistorial = {
+          idCita: res.idCita,
+          idUsuario: this.usuario.id,
+          idProveedor: this.proveedorSeleccionado.id,
+          idServicio: this.servicio.id || 'servicioPorDefinir',
+          fechaRealizacion: fechaHora,
+          estatus: 'Pendiente'
+        };
+  
+        await this.serviciosService.crearHistorial(nuevoHistorial);
+        console.log('📘 Historial creado:', nuevoHistorial);
+      }
+  
       await this.mostrarMensajeCitaAgendada(); // mostrar el mensaje
 
     } catch (error) {
-      console.error('❌ Error al agendar cita:', error);
+      console.error('❌ Error al agendar cita o crear historial:', error);
     }
   }
 

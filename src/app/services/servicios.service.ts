@@ -104,6 +104,10 @@ obtenerHistorialUsuario(idUsuario: string): Observable<any[]> {
     const url = `${this.baseUrl}/citas/crearcita`;
     return this.http.post<any>(url, citaData).toPromise();
   }
+
+  crearHistorial(historial: any) {
+    return this.http.post('https://api-cog73kiucq-uc.a.run.app/api/historial/crearhistorial', historial).toPromise();
+  }
   
   
 }
