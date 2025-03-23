@@ -1,34 +1,49 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <!-- Botón para regresar al Panel de Control -->
-      <ion-button [routerLink]="['/panel-control']">
-        <ion-icon slot="start" name="arrow-back"></ion-icon>
-        Regresar
-      </ion-button>
+      <ion-back-button defaultHref="/panel-control" text="Regresar"></ion-back-button>
     </ion-buttons>
-    <ion-title>Servicios Pasados</ion-title>
+    <ion-title>Historial de Servicios</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen="true">
-  <ion-list>
-    <ion-list-header>
-      <ion-label>Servicios realizados</ion-label>
-    </ion-list-header>
+<ion-content class="ion-padding">
+  <!-- 🔄 Spinner de carga -->
+  <div *ngIf="cargandoHistorial" class="spinner-container">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p class="ion-text-center">Cargando historial...</p>
+  </div>
 
-    <ion-item *ngFor="let servicio of serviciosPasados">
-      <ion-avatar slot="start" *ngIf="servicio.imagenUrl">
-        <img [src]="servicio.imagenUrl" alt="Imagen del servicio" />
-      </ion-avatar>
-      <ion-label>
-        <h2>{{ servicio.cliente }} - {{ servicio.vehiculo }}</h2>
-        <p>{{ servicio.tipoServicio }} | {{ servicio.fechaHora | date: 'dd MMM yyyy, h:mm a' }}</p>
-        <p *ngIf="!servicio.imagenUrl">No se proporcionó una imagen para este servicio.</p>
-      </ion-label>
-      <ion-button (click)="agregarImagen(servicio.id)" color="primary" size="small">
-        <ion-icon slot="start" name="camera"></ion-icon>Agregar Imagen
-      </ion-button>
-    </ion-item>
-  </ion-list>
+  <!-- ✅ Mostrar historial solo si ya terminó la carga -->
+  <ng-container *ngIf="!cargandoHistorial">
+    <ion-list *ngIf="serviciosPasados.length > 0; else noHistorial">
+      <ion-list-header>
+        <ion-label color="medium">Tus servicios anteriores</ion-label>
+      </ion-list-header>
+
+      <ion-card *ngFor="let cita of serviciosPasados" class="ion-margin-bottom">
+        <ion-card-header>
+          <ion-card-title>{{ cita.nombreServicio }}</ion-card-title>
+          <ion-card-subtitle>{{ cita.nombreAutolavado }}</ion-card-subtitle>
+        </ion-card-header>
+
+        <ion-card-content>
+          <p><strong>Fecha:</strong> {{ cita.fechaRealizacion | date: 'dd MMM yyyy, h:mm a' }}</p>
+          <p>
+            <strong>Estado:</strong>
+            <ion-badge [color]="getColorEstado(cita.estatus)">
+              {{ cita.estatus }}
+            </ion-badge>
+          </p>
+        </ion-card-content>
+      </ion-card>
+    </ion-list>
+
+    <!-- ❌ Solo se muestra cuando no hay historial y ya terminó de cargar -->
+    <ng-template #noHistorial>
+      <ion-item lines="none" class="ion-text-center">
+        <ion-label color="medium">No hay historial disponible.</ion-label>
+      </ion-item>
+    </ng-template>
+  </ng-container>
 </ion-content>

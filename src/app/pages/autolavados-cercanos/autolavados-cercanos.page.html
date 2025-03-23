@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-button [routerLink]="['/panel-control']">
         <ion-icon slot="start" name="arrow-back"></ion-icon>
@@ -10,52 +10,50 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <div id="map" style="height: 300px; margin-top: 10px;"></div>
+<ion-content fullscreen class="ion-padding">
+  <!-- Mapa -->
+  <div id="map" style="height: 300px; border-radius: 8px; margin-bottom: 16px;"></div>
 
+  <!-- Lista de autolavados -->
   <ion-accordion-group>
     <ion-accordion *ngFor="let proveedor of proveedores" [value]="proveedor.id">
-      <ion-item slot="header" (click)="mostrarServicios(proveedor)">
+      <!-- Encabezado del proveedor -->
+      <ion-item slot="header" button (click)="mostrarServicios(proveedor)">
         <ion-label>
-          <h2>{{ proveedor.nombreAutolavado }}</h2>
-          <p>{{ proveedor.ubicacion?.direccion }}</p>
+          <h2><strong>{{ proveedor.nombreAutolavado }}</strong></h2>
+          <p><ion-icon name="location-outline"></ion-icon> {{ proveedor.ubicacion?.direccion }}</p>
         </ion-label>
       </ion-item>
-  
-      <!-- 🔄 Spinner dentro del slot="content" -->
+
+      <!-- Spinner de carga -->
       <ion-item *ngIf="cargandoServicios[proveedor.id]" slot="content">
         <ion-label class="ion-text-center">
           <ion-spinner name="crescent" color="primary"></ion-spinner>
           <p>Cargando servicios...</p>
         </ion-label>
       </ion-item>
-  
-      <!-- Lista de servicios -->
-      <ion-item *ngIf="!cargandoServicios[proveedor.id] && esValidoServicio(proveedor.id)" slot="content">
-        <ion-label>
-          <ion-list>
-            <ion-item *ngFor="let servicio of serviciosPorProveedor[proveedor.id]" (click)="seleccionarProveedorYServicio(proveedor, servicio)">
-              <ion-label>
-                <h2>{{ servicio.nombre }}</h2>
-                <p>{{ servicio.descripcion }}</p>
-                <p><strong>Duración:</strong> {{ servicio.duracion }}</p>
-                <p><strong>Precio:</strong> ${{ servicio.precio }}</p>
-              </ion-label>
-              <ion-button fill="outline" color="primary" slot="end" (click)="solicitarServicio(proveedor, servicio)">
-                Solicitar Servicio
-              </ion-button>
-            </ion-item>
-          </ion-list>
-        </ion-label>
-      </ion-item>
-  
+
+      <!-- Servicios disponibles -->
+      <ion-list *ngIf="!cargandoServicios[proveedor.id] && esValidoServicio(proveedor.id)" slot="content">
+        <ion-item *ngFor="let servicio of serviciosPorProveedor[proveedor.id]">
+          <ion-label>
+            <h3><strong>{{ servicio.nombre }}</strong></h3>
+            <p>{{ servicio.descripcion }}</p>
+            <p><ion-icon name="time-outline"></ion-icon> Duración: {{ servicio.duracion }}</p>
+            <p><ion-icon name="cash-outline"></ion-icon> Precio: ${{ servicio.precio }}</p>
+          </ion-label>
+          <ion-button slot="end" fill="solid" color="success" (click)="solicitarServicio(proveedor, servicio)">
+            Solicitar
+          </ion-button>
+        </ion-item>
+      </ion-list>
+
       <!-- Sin servicios -->
       <ion-item *ngIf="!cargandoServicios[proveedor.id] && serviciosPorProveedor[proveedor.id]?.length === 0" slot="content">
         <ion-label class="ion-text-center">
-          <ion-text color="medium">No hay servicios disponibles para este proveedor.</ion-text>
+          <ion-text color="medium">Este proveedor aún no ha agregado servicios.</ion-text>
         </ion-label>
       </ion-item>
     </ion-accordion>
   </ion-accordion-group>
-
 </ion-content>

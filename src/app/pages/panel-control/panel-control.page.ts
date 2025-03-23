@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ServiciosService } from '../../services/servicios.service';
 import { AuthService } from '../../services/auth.service'; // Importar el servicio de autenticación
 import { Router } from '@angular/router';
-import { environment } from '../../../environments/environment'; // Importar el archivo de entorno
 
 interface Window {
   YT: any;
@@ -44,7 +43,6 @@ export class PanelControlPage implements OnInit {
     console.log("👤 Usuario cargado:", this.usuario);
 
     this.cargarCitasProximas();
-    this.cargarYouTubeAPI();
   }
 
 
@@ -122,64 +120,6 @@ export class PanelControlPage implements OnInit {
     }
   }
 
-  cargarYouTubeAPI() {
-    console.log('cargarYouTubeAPI: Verificando si la API de YouTube ya está cargada.');
-
-    if (!window.YT) {
-      console.log('cargarYouTubeAPI: API de YouTube no encontrada, cargando script.');
-      const tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      const firstScriptTag = document.getElementsByTagName('script')[0];
-
-      if (firstScriptTag?.parentNode) {
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        console.log('cargarYouTubeAPI: Script de API de YouTube insertado correctamente.');
-      } else {
-        console.error('cargarYouTubeAPI: No se pudo encontrar un elemento <script> en el DOM.');
-      }
-    } else {
-      console.log('cargarYouTubeAPI: API de YouTube ya cargada.');
-    }
-
-    // Esperar a que la API se cargue antes de inicializar el reproductor
-    window.onYouTubeIframeAPIReady = () => {
-      console.log('cargarYouTubeAPI: La API de YouTube está lista.');
-      this.inicializarReproductor();
-    };
-  }
-
-  inicializarReproductor() {
-    console.log('inicializarReproductor: Inicializando el reproductor de YouTube.');
-
-    // Destruir un reproductor existente si ya está presente
-    const existingPlayer = document.getElementById('youtube-player');
-    if (existingPlayer && window.YT && window.YT.Player) {
-      console.log('inicializarReproductor: Eliminando reproductor existente.');
-      existingPlayer.innerHTML = ''; // Limpia el contenedor del reproductor
-    }
-
-    try {
-      new window.YT.Player('youtube-player', {
-        height: '315',
-        width: '560',
-        videoId: 'pr6cpARvnKs',
-        events: {
-          onReady: this.onPlayerReady,
-          onError: this.onPlayerError,
-        },
-      });
-    } catch (error) {
-      console.error('inicializarReproductor: Error al inicializar el reproductor.', error);
-    }
-  }
-
-  onPlayerReady(event: any) {
-    console.log('onPlayerReady: El reproductor de YouTube está listo.');
-  }
-
-  onPlayerError(event: any) {
-    console.error('onPlayerError: Error en el reproductor de YouTube:', event);
-  }
 }
 
 interface ServicioEnProveedor {

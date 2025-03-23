@@ -57,6 +57,16 @@ obtenerTodosLosProveedores(): Observable<any[]> {
   const url = `${this.baseUrl}/proveedores/obtenerproveedores`;
   return this.http.get<any[]>(url);
 }
+
+obtenerHistorialUsuario(idUsuario: string): Observable<any[]> {
+  if (!idUsuario) {
+    console.error("❌ ID de usuario no válido para obtener historial");
+    return of([]); // Devuelve observable vacío para evitar error 500
+  }
+  const url = `${this.baseUrl}/historial/obtenerhistorialusuario/${idUsuario}`;
+  return this.http.get<any[]>(url);
+}
+
   
 
 
