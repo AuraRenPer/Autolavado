@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ServiciosService } from '../../services/servicios.service';
 import { ModalController } from '@ionic/angular';
-import { ModalCamaraComponent } from '../../components/modal-camara/modal-camara.component';
 import { AuthService } from '../../services/auth.service'; // Importar el servicio de autenticación
 
 @Component({
