@@ -20,7 +20,7 @@ const routes: Routes = [
   },
   {
     path: 'perfil-paciente',
-    loadChildren: () => import('./pages/perfil-paciente/perfil-paciente.module').then(m => m.PerfilPacientePageModule),
+    loadChildren: () => import('./pages/perfil/perfil.module').then(m => m.PerfilPacientePageModule),
     canActivate: [AuthGuard], // Protegido por el guard
   },
   {
@@ -58,6 +58,39 @@ const routes: Routes = [
         (m) => m.ChatRoomPageModule
       ),
   },
+  {
+    path: 'registro-proveedor',
+    loadChildren: () => import('./pages/registro-proveedor/registro-proveedor.module').then(m => m.RegistroProveedorPageModule),
+    canActivate: [AuthGuard],
+  },
+  {
+
+    path: 'edit-profile',
+    loadChildren: () => import('./pages/edit-profile/edit-profile.module').then(m => m.EditProfilePageModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'gestionar-servicios',
+    loadChildren: () => import('./pages/gestionar-servicios/gestionar-servicios.module').then(m => m.GestionarServiciosPageModule),
+    canActivate: [AuthGuard],
+    data: { roles: ['proveedor'] }
+
+  },
+  {
+    path: 'historial-proveedor',
+    loadChildren: () => import('./pages/historial-proveedor/historial-proveedor.module').then(m => m.HistorialProveedorPageModule),
+    canActivate: [AuthGuard],
+    data: { roles: ['proveedor'] }
+
+  },
+  {
+    path: 'solicitudes-proveedor',
+    loadChildren: () => import('./pages/solicitudes-proveedor/solicitudes-proveedor.module').then(m => m.SolicitudesProveedorPageModule),
+    canActivate: [AuthGuard],
+    data: { roles: ['proveedor'] }
+
+  }
+
 
 ];
 

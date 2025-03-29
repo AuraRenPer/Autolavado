@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar color="warning">
+    <ion-buttons slot="start">
+      <ion-button (click)="regresar()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Solicitudes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-spinner *ngIf="cargandoSolicitudes" name="dots" class="spinner-center"></ion-spinner>
+
+  <ion-segment [(ngModel)]="estadoSeleccionado" color="warning" (ionChange)="segmentChanged($event)">
+    <ion-segment-button value="Pendiente">Pendiente</ion-segment-button>
+    <ion-segment-button value="Aceptada">Aceptada</ion-segment-button>
+    <ion-segment-button value="Rechazada">Rechazada</ion-segment-button>
+    <ion-segment-button value="En proceso">En proceso</ion-segment-button>
+    <ion-segment-button value="Completado">Completado</ion-segment-button>
+  </ion-segment>
+  
+
+
+  <ion-card *ngFor="let s of solicitudesFiltradas">
+    <ion-card-header>
+      <ion-card-title>{{ s.servicio?.nombre || 'Servicio' }}</ion-card-title>
+      <ion-card-subtitle>Cliente: {{ s.usuario?.nombre }} {{ s.usuario?.apellido }}</ion-card-subtitle>
+
+    </ion-card-header>
+
+    <ion-card-content>
+      📅 Fecha: {{ s.cita?.fechaCita || 'No disponible' }}
+      <br />
+      Estado: <strong>{{ s.estado }}</strong>
+
+      <div class="ion-margin-top">
+        <ion-button *ngIf="s.estado === 'Pendiente'" color="success" (click)="actualizarEstado(s.id, 'Aceptada')">
+          Aceptar
+        </ion-button>
+        <ion-button *ngIf="s.estado === 'Pendiente'" color="danger" (click)="actualizarEstado(s.id, 'Rechazada')">
+          Rechazar
+        </ion-button>
+        <ion-button *ngIf="s.estado === 'Aceptada'" color="tertiary" (click)="actualizarEstado(s.id, 'En proceso')">
+          Iniciar
+        </ion-button>
+        <ion-button *ngIf="s.estado === 'En proceso'" color="medium" (click)="actualizarEstado(s.id, 'Completada')">
+          Finalizar
+        </ion-button>        
+      </div>
+    </ion-card-content>
+  </ion-card>
+  <ion-item *ngIf="!solicitudesFiltradas.length" lines="none">
+    <ion-label class="ion-text-center">
+      No hay solicitudes {{ estadoSeleccionado.toLowerCase() }}.
+    </ion-label>
+  </ion-item>
+
+</ion-content>

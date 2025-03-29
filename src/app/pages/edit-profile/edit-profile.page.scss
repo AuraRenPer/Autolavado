@@ -1,0 +1,69 @@
+ion-header {
+  ion-toolbar {
+    --background: #fec934;
+    --color: #000000;
+
+    ion-title {
+      font-weight: bold;
+      color: #000000;
+    }
+
+    ion-button {
+      --color: #000000;
+    }
+  }
+}
+
+ion-content {
+  --background: #000000;
+  color: #000000;
+}
+
+ion-card-title {
+  font-weight: bold;
+  color: #fec934;
+  font-size: 25px;
+}
+
+.edit-profile-card {
+  background-color: #000000;
+  border: 1px solid #787575;
+  color: #ffffff;
+  border-radius: 12px;
+}
+
+ion-item {
+  --background: transparent;
+  --color: #ffffff;
+
+  ion-label {
+    color: #ffffff;
+  }
+
+  ion-input {
+    color: #ffffff;
+  }
+
+  ion-icon {
+    color: #fec934;
+  }
+}
+
+ion-footer {
+  ion-toolbar {
+    --background: #000000;
+
+    ion-button {
+      --background: #fec934;
+      --color: #000000;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 16px;
+    }
+  }
+}
+
+ion-list {
+  --background: #000000 !important;
+  background-color: #000000 !important;
+}

@@ -1,0 +1,72 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Gestionar Servicios</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="regresarHomeProveedor()">
+        <ion-icon name="arrow-back" class="icono-back"></ion-icon>
+      </ion-button>
+      <ion-button (click)="agregarServicio()">
+        <ion-icon name="add-circle" style="color: rgb(255, 255, 255);"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="cargandoServicios" class="spinner-center">
+    <ion-spinner name="dots" color="primary"></ion-spinner>
+  </div>
+  <!-- Lista de servicios -->
+  <ion-list *ngIf="!cargandoServicios && servicios.length > 0">
+    <ion-item *ngFor="let servicio of servicios" class="servicio-item">
+      <ion-label>
+        <h2 class="titulo-servicio">{{ servicio.nombre }}</h2>
+        <p>{{ servicio.descripcionProblema }}</p>
+        <p><strong>Duración:</strong> {{ servicio.duracion }}</p>
+        <p><strong>Precio:</strong> {{ servicio.precio | currency }}</p>
+        <p><strong>Tipo:</strong> {{ servicio.tipoServicio }}</p>
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button (click)="editarServicio(servicio)">
+          <ion-icon name="create" class="icono-warning"></ion-icon>
+        </ion-button>
+        <ion-button (click)="eliminarServicio(servicio.id)">
+          <ion-icon name="trash" class="icono-danger"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+    <!-- Mensaje si no hay servicios -->
+    <ion-item *ngIf="!cargandoServicios && servicios.length === 0" lines="none" class="ion-text-center">
+      <ion-label>No hay servicios registrados.</ion-label>
+    </ion-item>
+  <ion-infinite-scroll (ionInfinite)="cargarServicios()">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando más servicios...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
+
+<style>
+  .servicio-item {
+    border: 2px solid #3880ff;
+    border-radius: 8px;
+    margin: 10px;
+    padding: 10px;
+    background: #f1f1f1;
+  }
+
+  .titulo-servicio {
+    color: #3880ff;
+    font-weight: bold;
+  }
+
+  .icono-warning {
+    color: #ffc107 !important;
+    /* Amarillo */
+  }
+
+  .icono-danger {
+    color: #dc3545 !important;
+    /* Rojo */
+  }
+</style>

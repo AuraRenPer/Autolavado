@@ -11,6 +11,7 @@ import { VideoRecorderComponent } from './components/video-recorder/video-record
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { CallNumber } from '@awesome-cordova-plugins/call-number/ngx';
 import { MediaCapture } from '@awesome-cordova-plugins/media-capture/ngx'; 
+import { IonicStorageModule } from '@ionic/storage-angular';
 
 // JWT
 import { JwtHelperService, JWT_OPTIONS } from '@auth0/angular-jwt';
@@ -28,6 +29,7 @@ import { HttpClientModule } from '@angular/common/http';
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
+    IonicStorageModule.forRoot(),
     AppRoutingModule, 
     HttpClientModule,
     ServiceWorkerModule.register('ngsw-worker.js', {

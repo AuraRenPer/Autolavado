@@ -1,0 +1,180 @@
+/* Centrado general del contenido */
+ion-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    --background: #ffffff; /* Fondo blanco */
+    color: black; /* Texto en negro */
+  }
+  
+  ion-content {
+    --background: #000000;
+    color: #ffffff;
+  }
+  
+  .avatar-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+  }
+  
+  /* Estilo y centrado de la tarjeta */
+  ion-card {
+    width: 90%;
+    max-width: 400px;
+    margin: 20px auto;
+    text-align: center;
+    background: white; /* Fondo blanco */
+    color: black; /* Texto en negro */
+  }
+  
+  /* Centrado del encabezado de la tarjeta */
+  ion-card-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: black; /* Asegura que el texto sea negro */
+  }
+  
+  /* Estilo para el avatar */
+  ion-avatar {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+  }
+  
+  /* Centrando títulos y subtítulos */
+  ion-card-title,
+  ion-card-subtitle,
+  ion-label {
+    text-align: center;
+    color: black; /* Asegurar contraste */
+  }
+  
+  /* Estilos para los botones personalizados */
+  .custom-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    width: 100%;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .custom-button:hover {
+    background-color: white;
+    border-radius: 201px;
+    color: black;
+  }
+  
+  /* Asegurar que los inputs tengan fondo blanco y texto negro */
+  input {
+    background-color: white !important;
+    color: black !important;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  /* Asegurar que los placeholders sean visibles */
+  input::placeholder {
+    color: #888;
+  }
+  
+  /* Asegurar que el contenedor del formulario tenga un fondo blanco */
+  .form-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Asegurar que toda la pantalla sea blanca */
+  html, body, ion-app, ion-content {
+    --background: rgb(0, 0, 0) !important; /* Aplica fondo blanco en Ionic */
+    background: rgb(0, 0, 0) !important; /* Aplica fondo blanco en todo */
+    min-height: 100vh;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Ajustar la caja del formulario para que resalte */
+  .container {
+    background: white; /* Blanco para mantener uniformidad */
+    padding: 20px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    margin: 0 auto; /* Centrado horizontal */
+  }
+  
+  /* Asegurar que el toolbar también sea blanco */
+  ion-toolbar {
+    --background: white !important;
+    background: white !important;
+    color: black !important;
+    text-align: center;
+  }
+  
+  ion-card-content {
+    background: white;
+    color: black;
+    text-align: center;
+  }
+  ion-list{
+    background: white;
+    color: black;
+    text-align: center;
+  }
+  
+  .btnp{
+    background:white ;
+    color: black;
+    
+  }
+  
+  .profile-avatar{
+    width: 100px;
+    height: 100px;
+    border: 3px solid #b8b8b8;
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+  }
+  
+  ion-button {
+    --border-radius: 12px;
+    --padding-top: 14px;
+    --padding-bottom: 14px;
+    --padding-start: 20px;
+    --padding-end: 20px;
+    width: 100%;
+    max-width: 300px;
+    margin: 12px auto;
+    display: block;
+    font-weight: 600;
+    font-size: 16px;
+    text-transform: none;
+  }
+  
+  /* Estilo para botones específicos */
+  ion-button[color="warning"] {
+    --background: #fec934;
+    --color: #000000;
+  }
+  
+  ion-button[color="tertiary"] {
+    --background: #ffffff;
+    --color: #000000;
+  }
+  
+  ion-button[color="danger"] {
+    --background: #ff4d4d;
+    --color: #ffffff;
+  }
+  

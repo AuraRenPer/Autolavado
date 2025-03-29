@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar color="warning">
+    <ion-buttons slot="start">
+      <ion-button (click)="regresar()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Historial</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-card *ngFor="let s of solicitudesCompletadas">
+    <ion-card-header>
+      <ion-card-title>{{ s.nombreServicio }}</ion-card-title>
+      <ion-card-subtitle>Cliente: {{ s.nombreUsuario }}</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      📅 Fecha: {{ s.fechaCita }}<br>
+      Estado: <strong>{{ s.estado }}</strong>
+    </ion-card-content>
+  </ion-card>
+
+  <div *ngIf="solicitudesCompletadas.length === 0" class="contenedor-vacio">
+    <ion-icon name="document-text-outline" class="icono-vacio"></ion-icon>
+    <p>No hay historial disponible.</p>
+  </div>
+
+</ion-content>

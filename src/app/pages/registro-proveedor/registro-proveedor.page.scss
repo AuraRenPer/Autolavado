@@ -1,0 +1,154 @@
+:host {
+  --ion-background-color: #000000;
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* Tarjeta principal */
+.profile-card {
+  margin: 16px;
+  border-radius: 16px;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.05);
+}
+
+/* Encabezado de la tarjeta */
+ion-card-header {
+  background-color: #fec934;
+  color: #000000;
+  padding: 24px 16px;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+/* Título con ícono */
+ion-card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Subtítulo */
+ion-card-subtitle {
+  font-size: 0.9rem;
+  color: #333;
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* Inputs con fondo oscuro y texto claro */
+ion-item {
+  --background: #2c2c2c;
+  --color: #ffffff;
+  --placeholder-color: #bbbbbb;
+  --highlight-color-focused: #fec934;
+  --padding-start: 12px;
+  --inner-padding-end: 12px;
+  margin-top: 10px;
+  border-radius: 12px;
+}
+
+ion-label,
+ion-select,
+ion-input {
+  color: #ffffff !important;
+}
+
+/* Iconos dentro de inputs */
+ion-item ion-icon {
+  color: #fec934;
+  font-size: 1.2rem;
+  align-items: center;
+}
+
+/* Vista previa de imagen */
+.image-preview {
+  margin: 16px 0;
+  text-align: center;
+
+  img {
+    max-width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* Botones */
+ion-button {
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Botón registrar */
+ion-button[color="warning"] {
+  --background: #fec934;
+  --color: #000000;
+}
+
+/* Botón cancelar */
+ion-button[color="danger"] {
+  --background: transparent;
+  --border-color: #e74c3c;
+  --color: #e74c3c;
+  border: 1px solid #e74c3c;
+}
+
+/* Espacio entre filas */
+ion-grid ion-row {
+  margin-top: 12px;
+}
+
+/* DATETIME para modo oscuro */
+ion-datetime {
+  --background: #2c2c2c; // Fondo interno del selector
+  --color: #fff;
+  --placeholder-color: #aaaaaa;
+  background-color: #2c2c2c; // Fondo contenedor
+  border-radius: 12px;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 1rem;
+}
+
+/* Elimina el borde blanco en iOS o Android */
+ion-modal {
+  --background: #1a1a1a;
+}
+
+/* Contenedor (ion-item) donde está el datetime */
+ion-item ion-datetime {
+  --background: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Contenedor general del mapa */
+.mapa-container {
+  background-color: #1a1a1a;
+  border-radius: 16px;
+  padding: 12px;
+  margin: 16px 0;
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+}
+
+/* Encabezado con el botón */
+.mapa-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  color: #fff;
+}
+
+/* Estilo del mapa */
+google-map.mapa {
+  height: 300px;
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid #333;
+}
