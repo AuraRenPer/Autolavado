@@ -1,8 +1,4 @@
 <ion-content class="ion-padding">
-  <ion-toolbar>
-    <ion-title class="ion-text-center">Bienvenido</ion-title>
-  </ion-toolbar>
-
   <div class="container">
     <ion-grid>
       <ion-row class="ion-justify-content-center">
@@ -15,10 +11,11 @@
               <ion-label position="floating">Usuario o Correo</ion-label>
               <ion-input formControlName="login" type="text" required></ion-input>
             </ion-item>
-            <small *ngIf="loginForm.controls['login'].invalid && loginForm.controls['login'].touched" class="text-danger">
+            <small *ngIf="loginForm.controls['login'].invalid && loginForm.controls['login'].touched"
+              class="text-danger">
               <ion-icon name="alert-circle-outline"></ion-icon> Ingrese su usuario o correo.
             </small>
-            
+
 
             <!-- Password -->
             <ion-item class="input-field">
@@ -26,8 +23,10 @@
               <ion-input [type]="showPassword ? 'text' : 'password'" formControlName="password" required></ion-input>
               <ion-icon name="eye" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
             </ion-item>
-            <small *ngIf="loginForm.controls['password'].invalid && loginForm.controls['password'].touched" class="text-danger">
-              <ion-icon name="alert-circle-outline"></ion-icon> La contraseña debe tener al menos 6 caracteres, un número y un carácter especial.
+            <small *ngIf="loginForm.controls['password'].invalid && loginForm.controls['password'].touched"
+              class="text-danger">
+              <ion-icon name="alert-circle-outline"></ion-icon> La contraseña debe tener al menos 6 caracteres, un
+              número y un carácter especial.
             </small>
 
             <!-- Botón Iniciar Sesión -->
@@ -39,13 +38,11 @@
           </form>
 
           <!-- Link para Registro -->
-          <p class="text-center mt-4">
+          <div class="ion-text-center ion-margin-top">
             ¿Aún no tienes cuenta?
-            <button (click)="goRegister()" class="btn btn-dark rounded-pill fw-bold">
-              Regístrate aquí
-            </button>
-          </p>
-
+            <ion-button fill="clear" color="primary" (click)="goRegister()"> Regístrate
+            </ion-button>
+          </div>
         </ion-col>
       </ion-row>
     </ion-grid>
