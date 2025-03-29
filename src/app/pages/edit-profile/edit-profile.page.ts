@@ -69,7 +69,7 @@ export class EditProfilePage {
 
 
   regresar() {
-    this.router.navigate(['/profile']);
+    this.router.navigate(['/perfil']);
   }
 
   async editarPerfil() {
@@ -165,7 +165,7 @@ export class EditProfilePage {
 
       await this.loadUserData();
       this.showToast('Perfil actualizado exitosamente.');
-      this.router.navigate(['/profile']);
+      this.router.navigate(['/perfil']);
     } catch (error: any) {
       console.error("❌ Error en la solicitud de actualización:", error);
 

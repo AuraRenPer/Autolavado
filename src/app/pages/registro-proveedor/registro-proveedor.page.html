@@ -25,7 +25,7 @@
         <ion-list class="profile-list">
           <ion-item>
             <ion-icon name="business-outline" slot="start"></ion-icon>
-            <ion-label position="floating">Nombre de la empresa</ion-label>
+            <ion-label position="floating">Nombre del autolavado</ion-label>
             <ion-input formControlName="nombreEmpresa" required></ion-input>
           </ion-item>
 
@@ -97,18 +97,6 @@
             <ion-datetime display-format="HH:mm" presentation="time" [(ngModel)]="horaFin"
               [ngModelOptions]="{ standalone: true }">
             </ion-datetime>
-          </ion-item>
-
-
-          <ion-item>
-            <ion-icon name="list-outline" slot="start"></ion-icon>
-            <ion-label>Categoría</ion-label>
-            <ion-select formControlName="idCategoria" placeholder="Seleccione una categoría" interface="popover">
-              <ion-select-option *ngFor="let categoria of categorias" [value]="categoria.idCategoria">
-                {{ categoria.nombre }}
-              </ion-select-option>
-            </ion-select>
-            
           </ion-item>
 
         </ion-list>

@@ -177,7 +177,7 @@ export class RegistroProveedorPage {
 
       await loading.dismiss();
       this.mostrarMensaje('Proveedor registrado exitosamente.');
-      this.router.navigate(['/home']);
+      this.router.navigate(['/panel-control']);
 
     } catch (error) {
       await loading.dismiss();
@@ -214,7 +214,7 @@ export class RegistroProveedorPage {
         {
           text: 'Sí',
           handler: () => {
-            this.navCtrl.navigateBack('/profile');
+            this.navCtrl.navigateBack('/perfil');
           }
         }
       ]

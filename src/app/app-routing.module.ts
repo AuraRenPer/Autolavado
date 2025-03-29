@@ -19,7 +19,7 @@ const routes: Routes = [
     canActivate: [AuthGuard], // Protegido por el guard
   },
   {
-    path: 'perfil-paciente',
+    path: 'perfil',
     loadChildren: () => import('./pages/perfil/perfil.module').then(m => m.PerfilPacientePageModule),
     canActivate: [AuthGuard], // Protegido por el guard
   },
