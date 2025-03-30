@@ -66,12 +66,6 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-
-    path: 'edit-profile',
-    loadChildren: () => import('./pages/edit-profile/edit-profile.module').then(m => m.EditProfilePageModule),
-    canActivate: [AuthGuard]
-  },
-  {
     path: 'gestionar-servicios',
     loadChildren: () => import('./pages/gestionar-servicios/gestionar-servicios.module').then(m => m.GestionarServiciosPageModule),
     canActivate: [AuthGuard],
@@ -96,7 +90,6 @@ const routes: Routes = [
     path: 'historialservicios',
     loadChildren: () => import('./pages/historialservicios/historialservicios.module').then(m => m.HistorialserviciosPageModule)
   },
-
 
 ];
 

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ServiciosService } from '../../services/servicios.service';
 import { AuthService } from '../../services/auth.service'; // Importar el servicio de autenticación
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 interface Window {
   YT: any;
@@ -35,7 +36,8 @@ export class PanelControlPage implements OnInit {
   constructor(
     private serviciosService: ServiciosService,
     private authService: AuthService, // Inyectar el servicio de autenticación
-    private router: Router // Inyectar el router para redirigir
+    private router: Router, // Inyectar el router para redirigir
+    private alertController: AlertController
   ) { }
 
     // Función para navegar a Historial de Servicios
@@ -128,25 +130,53 @@ export class PanelControlPage implements OnInit {
 
 
   async cerrarSesion() {
-    try {
-      console.log('cerrarSesion: Intentando cerrar sesión.');
-
-      // Reiniciar la API de YouTube
-      if (window.YT) {
-        console.log('cerrarSesion: Eliminando instancia de la API de YouTube.');
-        window.YT = undefined; // Reinicia la referencia a la API
-        window.onYouTubeIframeAPIReady = () => { }; // Limpia el callback asignando una función vacía
-      }
-
-      // Lógica de cierre de sesión
-      await this.authService.logout();
-      alert('Sesión cerrada exitosamente.');
-      this.router.navigate(['/login']); // Redirigir al login
-    } catch (error) {
-      console.error('Error al cerrar sesión:', error);
-      alert('Hubo un error al cerrar la sesión. Por favor, inténtalo de nuevo.');
-    }
+    const alert = await this.alertController.create({
+      header: 'Cerrar Sesión',
+      message: '¿Estás segur@ de que quieres cerrar sesión?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('⛔ Cancelado por el usuario');
+          }
+        },
+        {
+          text: 'Sí, salir',
+          role: 'confirm',
+          handler: async () => {
+            try {
+              if (window.YT) {
+                console.log('🧹 Reiniciando API de YouTube...');
+                window.YT = undefined;
+                window.onYouTubeIframeAPIReady = () => { };
+              }
+  
+              await this.authService.logout();
+              const confirmAlert = await this.alertController.create({
+                header: 'Sesión cerrada',
+                message: 'Esperamos verte pronto',
+                buttons: ['OK']
+              });
+              await confirmAlert.present();
+              this.router.navigate(['/login']);
+            } catch (error) {
+              console.error('Error al cerrar sesión:', error);
+              const errorAlert = await this.alertController.create({
+                header: 'Error',
+                message: 'No se pudo cerrar sesión. Intenta nuevamente.',
+                buttons: ['OK']
+              });
+              await errorAlert.present();
+            }
+          }
+        }
+      ]
+    });
+  
+    await alert.present();
   }
+  
 
 }
 

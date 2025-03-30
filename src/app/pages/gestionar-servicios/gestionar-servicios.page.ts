@@ -52,11 +52,24 @@ export class GestionarServiciosPage implements OnInit {
   }
   
 
-  obtenerIdProveedor(): string | null {
-    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
-    return usuario?.idProveedor || null;
-    
+  async obtenerIdProveedor(): Promise<string | null> {
+    const usuario = this.authService.getUsuario();
+    const idUsuario = usuario?.id;
+  
+    if (!idUsuario) return null;
+  
+    try {
+      const proveedor: any = await this.http
+        .get(`https://api-cog73kiucq-uc.a.run.app/api/proveedores/obtenerPorUsuario/${idUsuario}`)
+        .toPromise();
+  
+      return proveedor?.id || null;
+    } catch (error) {
+      console.error('❌ Error al obtener proveedor por usuario:', error);
+      return null;
+    }
   }
+  
 
   async obtenerIdProveedorPorUsuario(): Promise<string | null> {
     const usuario = this.authService.getUsuario();

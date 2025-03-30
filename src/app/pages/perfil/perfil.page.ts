@@ -88,13 +88,6 @@ export class PerfilPage {
     await alert.present();
   }
 
-  irAEditarPerfil() {
-    if (!this.user) {
-      console.warn("⛔ No se puede editar porque el usuario aún no está cargado.");
-      return;
-    }
-    this.router.navigate(['/edit-profile']);
-  }
 
   irARegistroProveedor() {
     this.router.navigate(['/registro-proveedor']);
