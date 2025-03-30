@@ -11,7 +11,9 @@ const routes: Routes = [
   {
     path: 'panel-control',
     loadChildren: () => import('./pages/panel-control/panel-control.module').then(m => m.PanelControlPageModule),
-    canActivate: [AuthGuard], // Protegido por el guard
+    canActivate: [AuthGuard],
+    data: { roles: ['proveedor', 'cliente'] }
+    // Protegido por el guard
   },
   {
     path: 'calendario-citas',

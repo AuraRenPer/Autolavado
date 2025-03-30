@@ -45,11 +45,11 @@ export class PanelControlPage implements OnInit {
   
     // Función para navegar a Contratar Servicio
     goToContratarservicio() {
-      this.router.navigate(['/contratarservicio']); // Navegar a la página contratarservicio
+      this.router.navigate(['/autolavados-cercanos']); // Navegar a la página contratarservicio
     }
   
     goToGestionarCita() {
-      this.router.navigate(['/gestion-citas']);
+      this.router.navigate(['/calendario-citas']);
     }
   
     goToHistorialServiciosProveedor() {
