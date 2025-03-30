@@ -60,7 +60,6 @@ export class RegistroProveedorPage {
       direccion: ['', Validators.required],
       latitud: ['', Validators.required],
       longitud: ['', Validators.required],
-      idCategoria: ['', Validators.required],
     });
 
   }

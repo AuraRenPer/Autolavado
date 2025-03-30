@@ -89,7 +89,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { roles: ['proveedor'] }
 
-  }
+  },
+  {
+    path: 'historialservicios',
+    loadChildren: () => import('./pages/historialservicios/historialservicios.module').then(m => m.HistorialserviciosPageModule)
+  },
 
 
 ];

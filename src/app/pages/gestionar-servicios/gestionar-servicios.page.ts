@@ -32,7 +32,7 @@ export class GestionarServiciosPage implements OnInit {
   }
 
   regresarHomeProveedor() {
-    this.navCtrl.navigateBack('/home');
+    this.navCtrl.navigateBack('/panel-control');
   }
 
   async cargarServicios() {

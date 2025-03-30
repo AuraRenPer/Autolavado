@@ -29,7 +29,8 @@ export class PanelControlPage implements OnInit {
 
   obtenerCitasPorUsuario: Array<{ idUsuario: string }> = [];
   usuario: any;
-
+  isProveedor = false;
+  isCliente = false;
 
   constructor(
     private serviciosService: ServiciosService,
@@ -37,12 +38,39 @@ export class PanelControlPage implements OnInit {
     private router: Router // Inyectar el router para redirigir
   ) { }
 
-  ngOnInit() {
-    console.log('ngOnInit: Inicializando la página PanelControl');
-    this.usuario = this.authService.getUsuario(); // ← Agrega esto
-    console.log("👤 Usuario cargado:", this.usuario);
+    // Función para navegar a Historial de Servicios
+    goToHistorialServicios() {
+      this.router.navigate(['/historialservicios']);
+    }
+  
+    // Función para navegar a Contratar Servicio
+    goToContratarservicio() {
+      this.router.navigate(['/contratarservicio']); // Navegar a la página contratarservicio
+    }
+  
+    goToGestionarCita() {
+      this.router.navigate(['/gestion-citas']);
+    }
+  
+    goToHistorialServiciosProveedor() {
+      this.router.navigate(['/historial-proveedor']);
+    }
+  
+    goToSolicitudesProveedor() {
+      this.router.navigate(['/solicitudes-proveedor']);
+    }
+    goToServiciosProveedor() {
+      this.router.navigate(['/gestionar-servicios']);
+    }
+  
 
-    this.cargarCitasProximas();
+  ngOnInit() {
+    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+    console.log('👤 Usuario detectado:', usuario);
+
+    this.isProveedor = usuario?.rol === 'proveedor';
+    this.isCliente = usuario?.rol === 'cliente';
+    console.log('usuario:', usuario);
   }
 
 

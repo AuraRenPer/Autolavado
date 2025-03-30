@@ -10,73 +10,128 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen="true" scroll-y="true" class="ion-padding">
+<ion-content class="home-content" fullscreen="true" scroll-y="true">
 
-  <!-- Lista de próximas citas -->
-  <ion-text color="primary">
-    <h2><strong>Tus próximas citas</strong></h2>
-  </ion-text>
+  <div class="home-title-container">
+    <h1 class="main-title">¡Bienvenido a Servilink!</h1>
+    <p class="subtitle">¿Qué deseas hacer hoy?</p>
+  </div>
 
-  <ng-container *ngIf="serviciosProximas.length > 0; else noCitas">
-    <ion-card *ngFor="let cita of serviciosProximas">
-      <ion-card-header>
-        <ion-card-title>{{ cita.nombreServicio }}</ion-card-title>
-        <ion-card-subtitle>{{ cita.nombreAutolavado }}</ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content>
-        <p><ion-icon name="calendar-outline"></ion-icon> {{ cita.fechaCita | date: 'fullDate' }}</p>
-        <p><ion-icon name="time-outline"></ion-icon> {{ cita.fechaCita | date: 'shortTime' }}</p>
-        <p><ion-icon name="information-circle-outline"></ion-icon> Estado: <strong>{{ cita.estatus }}</strong></p>
-      </ion-card-content>
-    </ion-card>
+  <!-- Cliente -->
+  <ng-container *ngIf="isCliente">
+
+    <!-- Próximas citas -->
+    <ion-text color="primary">
+      <h2><strong>Tus próximas citas</strong></h2>
+    </ion-text>
+
+    <ng-container *ngIf="serviciosProximas.length > 0; else noCitas">
+      <ion-card *ngFor="let cita of serviciosProximas">
+        <ion-card-header>
+          <ion-card-title>{{ cita.nombreServicio }}</ion-card-title>
+          <ion-card-subtitle>{{ cita.nombreAutolavado }}</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <p><ion-icon name="calendar-outline"></ion-icon> {{ cita.fechaCita | date: 'fullDate' }}</p>
+          <p><ion-icon name="time-outline"></ion-icon> {{ cita.fechaCita | date: 'shortTime' }}</p>
+          <p><ion-icon name="information-circle-outline"></ion-icon> Estado: <strong>{{ cita.estatus }}</strong></p>
+        </ion-card-content>
+      </ion-card>
+    </ng-container>
+
+    <ng-template #noCitas>
+      <ion-card color="light">
+        <ion-card-content>
+          <ion-text color="medium">
+            No hay citas próximas registradas.
+          </ion-text>
+        </ion-card-content>
+      </ion-card>
+    </ng-template>
+
+    <!-- Accesos rápidos -->
+    <ion-text color="primary">
+      <h2><strong>Accesos rápidos</strong></h2>
+    </ion-text>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+          <ion-card class="custom-card yellow-card" (click)="goToContratarservicio()">
+            <ion-card-content>
+              <ion-icon name="briefcase-outline" size="large"></ion-icon>
+              <div class="card-label">Contratar</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="6">
+          <ion-card class="custom-card yellow-card" (click)="goToHistorialServicios()">
+            <ion-card-content>
+              <ion-icon name="time-outline" size="large"></ion-icon>
+              <div class="card-label">Historial</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="6">
+          <ion-card class="custom-card yellow-card" routerLink="/profile">
+            <ion-card-content>
+              <ion-icon name="person-circle-outline" size="large"></ion-icon>
+              <div class="card-label">Perfil</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="6">
+          <ion-card class="custom-card yellow-card" routerLink="/categorias-servicio">
+            <ion-card-content>
+              <ion-icon name="apps-outline" size="large"></ion-icon>
+              <div class="card-label">Categorías</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </ng-container>
 
-  <ng-template #noCitas>
-    <ion-card color="light">
-      <ion-card-content>
-        <ion-text color="medium">
-          No hay citas próximas registradas.
-        </ion-text>
-      </ion-card-content>
-    </ion-card>
-  </ng-template>
+  <!-- Proveedor -->
+  <ng-container *ngIf="isProveedor">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+          <ion-card class="custom-card yellow-card" (click)="goToServiciosProveedor()">
+            <ion-card-content>
+              <ion-icon name="briefcase-outline" size="large"></ion-icon>
+              <div class="card-label">Gestionar Mis Servicios</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="6">
+          <ion-card class="custom-card yellow-card" (click)="goToSolicitudesProveedor()">
+            <ion-card-content>
+              <ion-icon name="apps-outline" size="large"></ion-icon>
+              <div class="card-label">Solicitudes</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
 
-  <!-- Accesos rápidos -->
-  <ion-text color="primary">
-    <h2><strong>Accesos rápidos</strong></h2>
-  </ion-text>
-
-  <ion-grid>
-    <ion-row class="ion-justify-content-center ion-align-items-center">
-      <ion-col size="6" size-md="4" size-lg="3">
-        <ion-button expand="block" shape="round" fill="outline" [routerLink]="['/perfil']">
-          <ion-icon name="person" slot="start"></ion-icon>
-          Perfil
-        </ion-button>
-      </ion-col>
-      <ion-col size="6" size-md="4" size-lg="3">
-        <ion-button expand="block" shape="round" fill="outline" [routerLink]="['/consultas-pasadas']">
-          <ion-icon name="time" slot="start"></ion-icon>
-          Servicios Anteriores
-        </ion-button>
-      </ion-col>
-      <ion-col size="6" size-md="4" size-lg="3">
-        <ion-button expand="block" shape="round" fill="outline" [routerLink]="['/autolavados-cercanos']">
-          <ion-icon name="navigate" slot="start"></ion-icon>
-          Autolavados
-        </ion-button>
-      </ion-col>
-
-      <ion-col size="6" size-md="4" size-lg="3">
-        <ion-button expand="block" shape="round" fill="outline" [routerLink]="['/grabar-consulta']">
-          <ion-icon slot="start" name="camera"></ion-icon>
-          <ion-label>Grabar servicio</ion-label>
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+      <ion-row>
+        <ion-col size="6">
+          <ion-card class="custom-card yellow-card" routerLink="/perfil">
+            <ion-card-content>
+              <ion-icon name="person-circle-outline" size="large"></ion-icon>
+              <div class="card-label">Perfil</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-container>
 
 </ion-content>
+
 
 <!-- <ion-header>
   <ion-toolbar>

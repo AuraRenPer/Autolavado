@@ -118,7 +118,7 @@ export class SolicitudesProveedorPage implements OnInit {
   }
 
   regresar() {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/panel-control']);
   }
   
   
