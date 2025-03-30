@@ -48,7 +48,7 @@ export class EditProfilePage {
         Authorization: `Bearer ${token}`
       };
 
-      const url = `https://api-cog73kiucq-uc.a.run.app/api/usuarios_servilink/${userId}`;
+      const url = `https://api-cog73kiucq-uc.a.run.app/api/usuarios/${userId}`;
 
       const userProfile: any = await this.http.get(url, { headers }).toPromise();
       this.user = userProfile;
@@ -158,7 +158,7 @@ export class EditProfilePage {
     };
 
     const userId = this.user.id;
-    const apiUrl = `https://api-cog73kiucq-uc.a.run.app/api/usuarios_servilink/${userId}`;
+    const apiUrl = `https://api-cog73kiucq-uc.a.run.app/api/usuarios/${userId}`;
 
     try {
       const response: any = await this.http.put(apiUrl, updatedUser, { headers }).toPromise();
@@ -197,7 +197,7 @@ export class EditProfilePage {
     };
 
     const userId = this.user.id;
-    const apiUrl = `https://api-cog73kiucq-uc.a.run.app/api/usuarios_servilink/${userId}`;
+    const apiUrl = `https://api-cog73kiucq-uc.a.run.app/api/usuarios/${userId}`;
 
     try {
       await this.http.put(apiUrl, updatedUser, { headers }).toPromise();

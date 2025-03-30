@@ -66,7 +66,7 @@ export class GestionarServiciosPage implements OnInit {
   
     try {
       const proveedor: any = await this.http
-        .get(`https://api-cog73kiucq-uc.a.run.app/api/proveedores_servilink/obtenerPorUsuario/${idUsuario}`)
+        .get(`https://api-cog73kiucq-uc.a.run.app/api/proveedores/obtenerPorUsuario/${idUsuario}`)
         .toPromise();
   
       return proveedor?.id || null;

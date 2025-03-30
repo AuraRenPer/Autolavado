@@ -20,7 +20,7 @@ export class AuthService {
     const estatus = "activo"; // 🔹 Se asigna un estatus por defecto
 
     const response = await this.http.post<{ success?: boolean; error?: string }>(
-      `${this.apiUrl}/usuarios_servilink`,
+      `${this.apiUrl}/usuarios`,
       { nombre, apellido, correo, password, username, telefono, fechaLogin, rol, estatus }
     ).toPromise();
 
@@ -38,7 +38,7 @@ export class AuthService {
 async loginUser(credentials: { login: string, password: string }) {
   try {
     const response = await this.http.post<{ token: string, usuario: any }>(
-      `${this.apiUrl}/usuarios_servilink/login`,
+      `${this.apiUrl}/usuarios/login`,
       credentials
     ).toPromise();
 

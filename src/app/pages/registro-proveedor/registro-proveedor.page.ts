@@ -84,7 +84,7 @@ export class RegistroProveedorPage {
 
   async cargarCategorias() {
     try {
-      const response: any = await this.http.get('https://api-cog73kiucq-uc.a.run.app/api/categorias_servilink/obtenercategorias').toPromise();
+      const response: any = await this.http.get('https://api-cog73kiucq-uc.a.run.app/api/categorias/obtenercategorias').toPromise();
       this.categorias = response.filter((cat: any) => cat.estatus === 'activo');
     } catch (error) {
       console.error('Error al cargar categorías:', error);
@@ -160,7 +160,7 @@ export class RegistroProveedorPage {
         estado: "activo"
       };
 
-      const response: any  = await this.http.post('https://api-cog73kiucq-uc.a.run.app/api/proveedores_servilink/crearproveedor', proveedorData).toPromise();
+      const response: any  = await this.http.post('https://api-cog73kiucq-uc.a.run.app/api/proveedores/crearproveedor', proveedorData).toPromise();
 
       // 🔹 Actualizar rol del usuario a proveedor
       if (response && response.idProveedor) {

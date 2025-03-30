@@ -55,7 +55,7 @@ export class AutolavadosCercanosPage implements AfterViewInit {
   
     try {
       const response: any = await this.http.get(
-        'https://api-cog73kiucq-uc.a.run.app/api/proveedores_servilink/soloConServicios'
+        'https://api-cog73kiucq-uc.a.run.app/api/proveedores/soloConServicios'
       ).toPromise();
   
       const imagenes = [

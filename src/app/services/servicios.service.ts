@@ -91,10 +91,6 @@ export class ServiciosService {
       console.log("Servicio actualizado con éxito:", response);
     } catch (error) {
       console.error("❌ Error al enviar servicio al backend:", error);
-   /* return this.http.put(`${this.baseUrl}/servicios_servilink/actualizarservicio/${id}`, nuevoServicio).subscribe({
-      next: (response) => console.log('✅ Servicio actualizado con éxito:', response),
-      error: (error) => console.error('❌ Error al actualizar servicio:', error),
-    });*/
   }
 }
   /** ✅ Eliminar un servicio (DELETE) */

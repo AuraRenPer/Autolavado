@@ -40,7 +40,7 @@ export class PerfilPage {
         Authorization: `Bearer ${token}`
       };
 
-      const apiUrl = `https://api-cog73kiucq-uc.a.run.app/api/usuarios_servilink/${userId}`;
+      const apiUrl = `https://api-cog73kiucq-uc.a.run.app/api/usuarios/${userId}`;
       
       const userProfile: any = await this.http.get(apiUrl, { headers }).toPromise();
       
