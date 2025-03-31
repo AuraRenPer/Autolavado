@@ -1,10 +1,9 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="warning">
     <ion-buttons slot="start">
       <ion-button (click)="confirmarCancelar()">
         <ion-icon slot="start" name="arrow-back"></ion-icon>
-        Regresar
-      </ion-button>      
+      </ion-button>
     </ion-buttons>
     <ion-title>Calendario de Servicios</ion-title>
   </ion-toolbar>
@@ -21,39 +20,6 @@
         <ion-label position="stacked">Cliente</ion-label>
         <ion-input [(ngModel)]="servicio.cliente" placeholder="Nombre del cliente"></ion-input>
       </ion-item>
-      <!-- Botón para mostrar/ocultar formulario de vehículo -->
-      <ion-item lines="none">
-        <ion-label>¿Agregar datos del vehículo?</ion-label>
-        <ion-toggle [(ngModel)]="mostrarVehiculo" color="primary"></ion-toggle>
-      </ion-item>
-
-      <!-- Formulario de vehículo (solo si está activado) -->
-      <div *ngIf="mostrarVehiculo">
-        <ion-item>
-          <ion-label position="stacked">Marca</ion-label>
-          <ion-input [(ngModel)]="servicio.marca" placeholder="Marca del vehículo"></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">Modelo</ion-label>
-          <ion-input [(ngModel)]="servicio.modelo" placeholder="Modelo del vehículo"></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">Año</ion-label>
-          <ion-input type="number" [(ngModel)]="servicio.year" placeholder="Año del vehículo"></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">Placa</ion-label>
-          <ion-input [(ngModel)]="servicio.placa" placeholder="Placa del vehículo"></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">Color</ion-label>
-          <ion-input [(ngModel)]="servicio.color" placeholder="Color del vehículo"></ion-input>
-        </ion-item>
-      </div>
 
       <!-- Autolavado seleccionado -->
       <ion-item>
@@ -82,37 +48,15 @@
       <!-- Selección de fecha y hora -->
       <ion-item>
         <ion-label position="stacked">Fecha y Hora</ion-label>
-        <ion-datetime [(ngModel)]="servicio.fechaHora" display-format="YYYY-MM-DD HH:mm"
-          placeholder="Seleccionar fecha y hora"></ion-datetime>
+        <ion-datetime [min]="minFecha" display-format="YYYY-MM-DD HH:mm" [(ngModel)]="servicio.fechaHora"
+          placeholder="Seleccionar fecha y hora">
+        </ion-datetime>
       </ion-item>
 
-      <ion-button expand="block" color="primary" (click)="guardarVehiculoYAgendarCita()">
+      <ion-button expand="block" color="primary" (click)="AgendarCita()">
         Solicitar Cita
       </ion-button>
-      
-    </ion-card-content>
-  </ion-card>
 
-  <!-- Lista de servicios próximos -->
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Servicios Próximos</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ion-item *ngFor="let servicio of serviciosProximos">
-          <ion-label>
-            <h2>{{ servicio.cliente }} - {{ servicio.vehiculo }}</h2>
-            <p>{{ servicio.tipoServicio }} en {{ servicio.autolavado }}</p>
-            <p><strong>Fecha:</strong> {{ servicio.fechaHora | date: 'dd MMM yyyy, h:mm a' }}</p>
-            <p><strong>Precio:</strong> {{ servicio.precio | currency:'MXN' }}</p>
-            <p><strong>Duración:</strong> {{ servicio.duracion }}</p>
-          </ion-label>
-        </ion-item>
-        <ion-item *ngIf="serviciosProximos.length === 0">
-          <ion-label>No hay citas próximas programados.</ion-label>
-        </ion-item>
-      </ion-list>
     </ion-card-content>
   </ion-card>
 </ion-content>
